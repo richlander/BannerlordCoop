@@ -1,11 +1,8 @@
-﻿using Common;
-using Common.Messaging;
+﻿using Common.Messaging;
 using Common.Network;
 using Common.Util;
 using GameInterface.Services.ObjectManager;
 using GameInterface.Services.Sieges.Messages;
-using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Siege;
 
 namespace GameInterface.Services.Sieges.Handlers;

@@ -1,13 +1,9 @@
 ﻿using Common.Util;
 using E2E.Tests.Environment;
 using E2E.Tests.Environment.Instance;
-using E2E.Tests.Util;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem.Siege;
 using Xunit.Abstractions;
 
@@ -64,6 +60,5 @@ namespace E2E.Tests.Services.SiegeEvents
                 Assert.Equal(value, serverSiegeEvent.SiegeStartTime.NumTicks);
             }
         }
-
     }
 }

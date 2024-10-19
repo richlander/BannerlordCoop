@@ -2,7 +2,6 @@
 using E2E.Tests.Environment;
 using E2E.Tests.Environment.Instance;
 using HarmonyLib;
-using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Siege;
 using Xunit.Abstractions;
@@ -139,6 +138,4 @@ public class SiegeEventFieldTests : IDisposable
             Assert.True(clientSiegeEvent._isBesiegerDefeated);
         }
     }
-
-
 }
