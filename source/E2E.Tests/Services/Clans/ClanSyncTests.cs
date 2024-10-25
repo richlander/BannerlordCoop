@@ -45,7 +45,7 @@ namespace E2E.Tests.Services.Clans
             foreach (var client in TestEnvironment.Clients)
             {
                 Assert.True(client.ObjectManager.TryGetObject(clanId, out Clan clientClan));
-                Assert.Equal(serverClan.Name, clientClan.Name);
+                Assert.Equal(serverClan.Name.Value, clientClan.Name.Value);
             }
         }
     }
