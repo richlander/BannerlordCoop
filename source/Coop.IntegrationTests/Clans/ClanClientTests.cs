@@ -41,13 +41,13 @@ namespace Coop.IntegrationTests.Clans
             client1.SimulateMessage(this, message);
 
             // Assert
-            Assert.Equal(1, server.InternalMessages.GetMessageCount<ChangeClanName>());
+            Assert.Equal(1, server.InternalMessages.GetMessageCount<ClanNameChanged>());
 
-            Assert.Equal(1, client1.InternalMessages.GetMessageCount<ChangeClanName>());
+            Assert.Equal(1, client1.InternalMessages.GetMessageCount<ClanNameChanged>());
 
             foreach (EnvironmentInstance client in TestEnvironment.Clients.Where(c => c != client1))
             {
-                Assert.Equal(1, client.InternalMessages.GetMessageCount<ChangeClanName>());
+                Assert.Equal(1, client.InternalMessages.GetMessageCount<ClanNameChanged>());
             }
         }
         /// <summary>

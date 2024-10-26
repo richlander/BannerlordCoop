@@ -1,22 +1,19 @@
 ﻿using Common.Messaging;
 using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TaleWorlds.CampaignSystem;
 
 namespace GameInterface.Services.Clans.Messages
 {
-    /// <summary>
-    /// Event to update game interface when clan name is changed
-    /// </summary>
-    public record ChangeClanName : ICommand
+    [ProtoContract(SkipConstructor = true)]
+    internal class NetworkChangeClanName : ICommand
     {
+        [ProtoMember(1)]
         public string ClanId { get; }
+        [ProtoMember(2)]
         public string Name { get; }
+        [ProtoMember(3)]
         public string InformalName { get; }
 
-        public ChangeClanName(string clanId, string name, string informalName)
+        public NetworkChangeClanName(string clanId, string name, string informalName)
         {
             ClanId = clanId;
             Name = name;
