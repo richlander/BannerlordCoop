@@ -13,7 +13,7 @@ internal struct BannerSurrogate
 
     public BannerSurrogate(Banner banner)
     {
-        Data = banner.Serialize();
+        Data = banner?.Serialize();
     }
 
     public static implicit operator BannerSurrogate(Banner banner)
