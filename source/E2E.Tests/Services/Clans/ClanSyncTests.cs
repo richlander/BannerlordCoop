@@ -179,7 +179,8 @@ namespace E2E.Tests.Services.Clans
                 Assert.Equal(serverClan._clanMidSettlement, clientClan._clanMidSettlement);
                 Assert.Equal(serverClan._basicTroop, clientClan._basicTroop);
                 Assert.Equal(serverClan._leader, clientClan._leader);
-                Assert.Equal(serverClan._banner, clientClan._banner);
+                Assert.Equal(serverClan._banner._bannerVisual, clientClan._banner._bannerVisual);
+                Assert.Equal(serverClan._banner._bannerDataList, clientClan._banner._bannerDataList);
                 Assert.Equal(serverClan._tier, clientClan._tier);
                 Assert.Equal(serverClan._aggressiveness, clientClan._aggressiveness);
                 Assert.Equal(serverClan._tributeWallet, clientClan._tributeWallet);
