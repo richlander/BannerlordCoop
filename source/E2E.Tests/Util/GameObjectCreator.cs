@@ -42,7 +42,8 @@ internal class GameObjectCreator
         { typeof(MilitiaPartyComponent), new MilitiaPartyComponentBuilder() },
         { typeof(ItemRoster), new ItemRosterBuilder() },
         { typeof(Building), new BuildingBuilder() },
-        { typeof(ItemCategory), new ItemCategoryBuilder() }
+        { typeof(ItemCategory), new ItemCategoryBuilder() },
+        { typeof(TroopRoster), new TroopRosterBuilder() }
     };
 
     public static T CreateInitializedObject<T>()
