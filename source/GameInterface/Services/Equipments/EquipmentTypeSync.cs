@@ -10,7 +10,7 @@ class EquipmentSync : IAutoSync
 {
     public EquipmentSync(IAutoSyncBuilder autoSyncBuilder)
     {
-        autoSyncBuilder.AddField(AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType)));
+        //autoSyncBuilder.AddField(AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType)));
 
     }
 }
