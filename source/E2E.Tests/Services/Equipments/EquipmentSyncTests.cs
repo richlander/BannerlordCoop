@@ -1,19 +1,8 @@
 ﻿using E2E.Tests.Environment;
-using E2E.Tests.Util;
-using TaleWorlds.CampaignSystem.Settlements;
 using Xunit.Abstractions;
 using TaleWorlds.Core;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Settlements.Workshops;
-using GameInterface.Services.ObjectManager;
-using Xunit.Sdk;
 using HarmonyLib;
-using TaleWorlds.CampaignSystem.Party.PartyComponents;
-using static System.Net.Mime.MediaTypeNames;
-using TaleWorlds.Library;
-using TaleWorlds.ObjectSystem;
-using TaleWorlds.CampaignSystem.Inventory;
-using TaleWorlds.CampaignSystem.CampaignBehaviors;
+
 
 
 namespace E2E.Tests.Services.Equipments;
