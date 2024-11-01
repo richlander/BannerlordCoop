@@ -34,14 +34,14 @@ public class EquipmentDeleteTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
-        Hero killHero = GameObjectCreator.CreateInitializedObject<Hero>();
+        Hero killHero = null;
         string? battleEquipmentId = null;
         string? civilEquipmentId = null;
 
         // Act
-        
         server.Call(() =>
         {
+            killHero = GameObjectCreator.CreateInitializedObject<Hero>();
             killHero._battleEquipment = new Equipment();
             killHero._civilianEquipment = new Equipment();
             Equipment battle = killHero.BattleEquipment;
@@ -73,12 +73,13 @@ public class EquipmentDeleteTests : IDisposable
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
 
-        Hero killHero = GameObjectCreator.CreateInitializedObject<Hero>();
+        Hero killHero = null;
         string? battleEquipmentId = null;
         string? civilEquipmentId = null;
         
         server.Call(() =>
         {
+            killHero = GameObjectCreator.CreateInitializedObject<Hero>();
             killHero._battleEquipment = new Equipment();
             killHero._civilianEquipment = new Equipment();
             Assert.True(server.ObjectManager.TryGetId(killHero.BattleEquipment, out battleEquipmentId));
@@ -112,14 +113,14 @@ public class EquipmentDeleteTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
-        Hero killHero = GameObjectCreator.CreateInitializedObject<Hero>();
+        Hero killHero = null;
         string? battleEquipmentId = null;
         string? civilEquipmentId = null;
 
         // Act
-
         server.Call(() =>
         {
+            killHero = GameObjectCreator.CreateInitializedObject<Hero>();
             killHero._battleEquipment = new Equipment();
             killHero._civilianEquipment = new Equipment();
             Equipment battle = killHero.BattleEquipment;
@@ -151,12 +152,13 @@ public class EquipmentDeleteTests : IDisposable
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
 
-        Hero killHero = GameObjectCreator.CreateInitializedObject<Hero>();
+        Hero killHero = null;
         string? battleEquipmentId = null;
         string? civilEquipmentId = null;
 
         server.Call(() =>
         {
+            killHero = GameObjectCreator.CreateInitializedObject<Hero>();
             killHero._battleEquipment = new Equipment();
             killHero._civilianEquipment = new Equipment();
             Assert.True(server.ObjectManager.TryGetId(killHero.BattleEquipment, out battleEquipmentId));
