@@ -63,14 +63,19 @@ public class CaravanPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
+        Hero hero = null;
+        Settlement settlement = null;
 
-        // Act
-        PartyComponent? partyComponent = null;
+        server.Call(() =>
+        {
+            hero = GameObjectCreator.CreateInitializedObject<Hero>();
+            settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+        });
+
+            // Act
+            PartyComponent? partyComponent = null;
         client1.Call(() =>
         {
-            var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-            var hero = GameObjectCreator.CreateInitializedObject<Hero>();
-
             partyComponent = new CaravanPartyComponent(settlement, hero, hero);
         });
 
