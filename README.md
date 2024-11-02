@@ -23,11 +23,15 @@ dotnet tool install --global --add-source ./bin/Release BannerlordCoop
 
 ## Usage
 
-After installing the dotnet tool globally, just call the root command `coop-create` specifying a command with it's argument and options.
+After installing the dotnet tool globally, just call the root command `coop-create` specifying a command with it's argument and options, you can use Visual Studio's own package manager console or any other CLI.
+
+The main argument for all commands is the type's fully qualified name and assembly separated by a comma.
 
 Example: `coop-create all "TaleWorlds.CampaignSystem.Siege.BesiegerCamp, TaleWorlds.CampaignSystem" --members SiegeEvent SiegeEngines SiegeStrategy NumberOfTroopsKilledOnSide _leaderParty `
 
 This will generate ALL template files for BesiegerCamp and even prepare autosync and create e2e and commands for all specified members.
+
+Obs: Be aware that nested types use a '+' instead of a dot on their qualified names, for example `SiegeEvent.SiegeEnginesContainer` is `TaleWorlds.CampaignSystem.Siege.SiegeEvent+SiegeEnginesContainer, TaleWorlds.CampaignSystem"`
 
 ### Main Commands
 - **`all <type-fully-qualified-name> [--members] [--overwrite]`**  
