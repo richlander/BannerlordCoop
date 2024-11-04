@@ -550,3 +550,5 @@ source/.idea
 !*MissionTestMod.csproj.user
 # CodeRush
 /source/.cr/personal
+/source/Coop/Coop.csproj.user
+/source/ClientDebug/ClientDebug.csproj.user
