@@ -89,13 +89,13 @@ internal class MobilePartyInterface : IMobilePartyInterface
     {
         if (objectManager.TryGetObject(partyId, out MobileParty mobileParty) == false)
         {
-            Logger.Error("PartyId not found: {id}", partyId);
+             Logger.Error("PartyId not found: {id}", partyId);
             return;
         }
 
         if (objectManager.TryGetObject(settlementId, out Settlement settlement) == false)
         {
-            Logger.Error("SettlementId not found: {id}", settlementId);
+             Logger.Error("SettlementId not found: {id}", settlementId);
             return;
         }
 
@@ -106,7 +106,7 @@ internal class MobilePartyInterface : IMobilePartyInterface
             return;
         }
 
-        if (PlayerEncounter.Current is not null) return;
+       // if (PlayerEncounter.Current is not null) return;
 
         GameLoopRunner.RunOnMainThread(() =>
         {
@@ -115,7 +115,7 @@ internal class MobilePartyInterface : IMobilePartyInterface
                 PlayerEncounter.Start();
                 PlayerEncounter.Current.Init(mobileParty.Party, settlementParty, settlement);
             }
-        });
+        }, blocking: true);
     }
 
     public void EndPlayerSettlementEncounter()
@@ -127,7 +127,7 @@ internal class MobilePartyInterface : IMobilePartyInterface
                 PlayerEncounter.Finish(true);
                 Campaign.Current.SaveHandler.SignalAutoSave();
             }
-        });
+        }, blocking: true);
     }
 
     public void EnterSettlement(string partyId, string settlementId)
