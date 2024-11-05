@@ -11,5 +11,5 @@ public class DisablePartyEncounterPatch
 {
     [HarmonyPatch("StartPartyEncounter")]
     [HarmonyPrefix]
-    private static bool StartPartyEncounterPrefix() => false;
+    private static bool StartPartyEncounterPrefix() => ModInformation.IsServer;
 }
