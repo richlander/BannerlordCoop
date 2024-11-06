@@ -5,223 +5,224 @@ using HarmonyLib;
 
 
 
-//namespace E2E.Tests.Services.Equipments;
-
-//TODO Fix
-//public class EquipmentSyncTests : IDisposable
-//{
-//    E2ETestEnvironment TestEnvironment { get; }
-//    public EquipmentSyncTests(ITestOutputHelper output)
-//    {
-//        TestEnvironment = new E2ETestEnvironment(output);
-//    }
+namespace E2E.Tests.Services.Equipments;
 
-//    public void Dispose()
-//    {
-//        TestEnvironment.Dispose();
-//    }
 
-//    [Fact]
-//    public void ServerCreateEquipment_SyncAllClients()
-//    {
-//        // Arrange
-//        var server = TestEnvironment.Server;
+public class EquipmentSyncTests : IDisposable
+{
+    E2ETestEnvironment TestEnvironment { get; }
+    public EquipmentSyncTests(ITestOutputHelper output)
+    {
+        TestEnvironment = new E2ETestEnvironment(output);
+    }
 
-//        string? EquipmentId = null;
-//        string? EquipmentWithEquipParamId = null;
-//        string? civilEquipmentId = null;
-
-
-//        // Act
+    public void Dispose()
+    {
+        TestEnvironment.Dispose();
+    }
 
-//        server.Call(() =>
-//        {
-//            // No Params
-//            var Equip = new Equipment();
-//            Assert.True(server.ObjectManager.TryGetId(Equip, out EquipmentId));
+    [Fact]
+    public void ServerCreateEquipment_SyncAllClients()
+    {
+        // Arrange
+        var server = TestEnvironment.Server;
 
-//            // EquipmentType Param
-//            bool isCivil = true;
-//            var civilEquip = new Equipment(isCivil);
-//            string test2 = civilEquip.CalculateEquipmentCode();
-//            Assert.True(server.ObjectManager.TryGetId(civilEquip, out civilEquipmentId));
+        string? EquipmentId = null;
+        string? EquipmentWithEquipParamId = null;
+        string? civilEquipmentId = null;
 
-//            // Equipment Param
-           
-//            var EquipWithEquipParam = new Equipment(Equip);
-//            Assert.True(server.ObjectManager.TryGetId(EquipWithEquipParam, out EquipmentWithEquipParamId));
 
-//        });
+        // Act
 
-//        // Assert
-//        Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var Equip));
+        server.Call(() =>
+        {
+            // No Params
+            var Equip = new Equipment();
+            Assert.True(server.ObjectManager.TryGetId(Equip, out EquipmentId));
 
-//        Assert.True(server.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var serverCivilEquipment));
-//        Assert.True(serverCivilEquipment.IsCivilian);
+            // EquipmentType Param
+            bool isCivil = true;
+            var civilEquip = new Equipment(isCivil);
+            string test2 = civilEquip.CalculateEquipmentCode();
+            Assert.True(server.ObjectManager.TryGetId(civilEquip, out civilEquipmentId));
 
-//        Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var serverEquipment));
-//        Assert.Equal(serverEquipment._equipmentType, Equip._equipmentType);
+            // Equipment Param
 
+            var EquipWithEquipParam = new Equipment(Equip);
+            Assert.True(server.ObjectManager.TryGetId(EquipWithEquipParam, out EquipmentWithEquipParamId));
 
-//        foreach (var client in TestEnvironment.Clients)
-//        {
-//            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var _));
-//            Assert.True(client.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var clientCivilEquipment));
-//            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var clientEquipment));
+        });
 
-//        }
+        // Assert
+        Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var Equip));
 
-//    }
-    
+        Assert.True(server.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var serverCivilEquipment));
+        Assert.True(serverCivilEquipment.IsCivilian);
 
-//    [Fact]
-//    public void ClientCreateEquipment_DoesNothing()
-//    {
-//        // Arrange
-//        var server = TestEnvironment.Server;
-//        var client1 = TestEnvironment.Clients.First();
+        Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var serverEquipment));
+        Assert.Equal(serverEquipment._equipmentType, Equip._equipmentType);
 
-//        string? EquipmentId = null;
-//        string? EquipmentWithEquipParamId = null;
-//        string? EquipmentWithExistingEquipId = null;
-//        string? civilEquipmentId = null;
-//        Equipment? ServerEquip = null;
 
-//        server.Call(() =>
-//        {
-//            ServerEquip = new Equipment();
-//            server.ObjectManager.TryGetId(ServerEquip, out EquipmentWithExistingEquipId); // for Equipment(Equipment equipment) test in client1.call
-//        });
+        foreach (var client in TestEnvironment.Clients)
+        {
+            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var _));
+            Assert.True(client.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var clientCivilEquipment));
+            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var clientEquipment));
 
-//        // Act
+        }
 
+    }
 
-//        client1.Call(() =>
-//        {
-//            Equipment Equip = new Equipment();
-//            Assert.False(client1.ObjectManager.TryGetId(Equip, out EquipmentId));
 
-//            // Equipment(bool IsCivil) 
-//            bool isCivil = true;
-//            var civilEquip = new Equipment(isCivil);
-//            Assert.False(client1.ObjectManager.TryGetId(civilEquip, out civilEquipmentId));
+    [Fact]
+    public void ClientCreateEquipment_DoesNothing()
+    {
+        // Arrange
+        var server = TestEnvironment.Server;
+        var client1 = TestEnvironment.Clients.First();
 
-//            // Equipment(Equipment equipment) 
-//            var EquipWithEquipParam = new Equipment(Equip);
-//            Assert.False(client1.ObjectManager.TryGetId(EquipWithEquipParam, out EquipmentWithEquipParamId));
+        string? EquipmentId = null;
+        string? EquipmentWithEquipParamId = null;
+        string? EquipmentWithExistingEquipId = null;
+        string? civilEquipmentId = null;
+        Equipment? ServerEquip = null;
 
+        server.Call(() =>
+        {
+            ServerEquip = new Equipment();
+            server.ObjectManager.TryGetId(ServerEquip, out EquipmentWithExistingEquipId); // for Equipment(Equipment equipment) test in client1.call
+        });
 
-//            client1.ObjectManager.TryGetObject<Equipment>(EquipmentWithExistingEquipId, out var EquipParam);
+        // Act
 
-//            // For this test to pass requires working server-side syncing
-//            var EquipWithExistingEquip = new Equipment(EquipParam);
-//            Assert.False(client1.ObjectManager.TryGetId(EquipWithExistingEquip, out EquipmentWithExistingEquipId));
 
-//        });
+        client1.Call(() =>
+        {
+            Equipment Equip = new Equipment();
+            Assert.False(client1.ObjectManager.TryGetId(Equip, out EquipmentId));
 
-//        // Assert
-//        Assert.False(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var _));
-//        Assert.False(server.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var _));
-//        Assert.False(server.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var _));
-//        Assert.False(server.ObjectManager.TryGetObject<Equipment>(EquipmentWithExistingEquipId, out var _));
+            // Equipment(bool IsCivil) 
+            bool isCivil = true;
+            var civilEquip = new Equipment(isCivil);
+            Assert.False(client1.ObjectManager.TryGetId(civilEquip, out civilEquipmentId));
 
-//        foreach (var client in TestEnvironment.Clients)
-//        {
-//            Assert.False(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var _));
-//            Assert.False(client.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var _));
-//            Assert.False(client.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var _));
-//            Assert.False(client.ObjectManager.TryGetObject<Equipment>(EquipmentWithExistingEquipId, out var _));
+            // Equipment(Equipment equipment) 
+            var EquipWithEquipParam = new Equipment(Equip);
+            Assert.False(client1.ObjectManager.TryGetId(EquipWithEquipParam, out EquipmentWithEquipParamId));
 
-//        }
-//    }
 
-//    [Fact]
-//    public void Server_EquipmentType() {
+            client1.ObjectManager.TryGetObject<Equipment>(EquipmentWithExistingEquipId, out var EquipParam);
 
-//        // Arrange
-//        var server = TestEnvironment.Server;
+            // For this test to pass requires working server-side syncing
+            var EquipWithExistingEquip = new Equipment(EquipParam);
+            Assert.False(client1.ObjectManager.TryGetId(EquipWithExistingEquip, out EquipmentWithExistingEquipId));
 
-//        string EquipmentId = null;
+        });
 
-//        var field = AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType));
+        // Assert
+        Assert.False(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var _));
+        Assert.False(server.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var _));
+        Assert.False(server.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var _));
+        Assert.False(server.ObjectManager.TryGetObject<Equipment>(EquipmentWithExistingEquipId, out var _));
 
+        foreach (var client in TestEnvironment.Clients)
+        {
+            Assert.False(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var _));
+            Assert.False(client.ObjectManager.TryGetObject<Equipment>(civilEquipmentId, out var _));
+            Assert.False(client.ObjectManager.TryGetObject<Equipment>(EquipmentWithEquipParamId, out var _));
+            Assert.False(client.ObjectManager.TryGetObject<Equipment>(EquipmentWithExistingEquipId, out var _));
 
-//        // Get field intercept to use on the server to simulate the field changing
-//        var intercept = TestEnvironment.GetIntercept(field);
+        }
+    }
 
+    [Fact]
+    public void Server_EquipmentType()
+    {
 
-//        Equipment.EquipmentType equipmentType = Equipment.EquipmentType.Civilian;
+        // Arrange
+        var server = TestEnvironment.Server;
 
-//        // Act
-//        server.Call(() =>
-//        {
-//            var Equipment = new Equipment();
+        string EquipmentId = null;
 
-//            Assert.True(server.ObjectManager.TryGetId(Equipment, out EquipmentId));
+        var field = AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType));
 
-//            Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
 
-//            Assert.NotEqual(equipment._equipmentType, equipmentType);
+        // Get field intercept to use on the server to simulate the field changing
+        var intercept = TestEnvironment.GetIntercept(field);
 
-//            // Simulate the field changing
-//            intercept.Invoke(null, new object[] { equipment, equipmentType });
 
-//            Assert.Equal(equipmentType, equipment._equipmentType);
-//        });
+        Equipment.EquipmentType equipmentType = Equipment.EquipmentType.Civilian;
 
-//        // Assert
-//        foreach (var client in TestEnvironment.Clients)
-//        {
-//            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
+        // Act
+        server.Call(() =>
+        {
+            var Equipment = new Equipment();
 
-//            Assert.Equal(equipment._equipmentType, equipmentType);
-//        }
+            Assert.True(server.ObjectManager.TryGetId(Equipment, out EquipmentId));
 
-//    }
+            Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
 
-//    [Fact]
-//    public void Server_EquipmentElement()
-//    {
+            Assert.NotEqual(equipment._equipmentType, equipmentType);
 
-//        // Arrange
-//        var server = TestEnvironment.Server;
+            // Simulate the field changing
+            intercept.Invoke(null, new object[] { equipment, equipmentType });
 
-//        string EquipmentId = null;
+            Assert.Equal(equipmentType, equipment._equipmentType);
+        });
 
-//        var field = AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType));
+        // Assert
+        foreach (var client in TestEnvironment.Clients)
+        {
+            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
 
+            Assert.Equal(equipment._equipmentType, equipmentType);
+        }
 
-//        // Get field intercept to use on the server to simulate the field changing
-//        var intercept = TestEnvironment.GetIntercept(field);
+    }
 
+    [Fact]
+    public void Server_EquipmentElement()
+    {
 
-//        Equipment.EquipmentType equipmentType = Equipment.EquipmentType.Civilian;
+        // Arrange
+        var server = TestEnvironment.Server;
 
-//        // Act
-//        server.Call(() =>
-//        {
-//            var Equipment = new Equipment();
+        string EquipmentId = null;
 
-//            Assert.True(server.ObjectManager.TryGetId(Equipment, out EquipmentId));
+        var field = AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType));
 
-//            Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
 
-//            //TODO Fix
-//            Assert.NotEqual(equipment._equipmentType, equipmentType);
+        // Get field intercept to use on the server to simulate the field changing
+        var intercept = TestEnvironment.GetIntercept(field);
 
-//            // Simulate the field changing
-//            intercept.Invoke(null, new object[] { equipment, equipmentType });
 
-//            Assert.Equal(equipmentType, equipment._equipmentType);
-//        });
+        Equipment.EquipmentType equipmentType = Equipment.EquipmentType.Civilian;
 
-//        // Assert
-//        foreach (var client in TestEnvironment.Clients)
-//        {
-//            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
+        // Act
+        server.Call(() =>
+        {
+            var Equipment = new Equipment();
 
-//            Assert.Equal(equipment._equipmentType, equipmentType);
-//        }
+            Assert.True(server.ObjectManager.TryGetId(Equipment, out EquipmentId));
 
-//    }
-//}
+            Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
+
+            //TODO Fix
+            Assert.NotEqual(equipment._equipmentType, equipmentType);
+
+            // Simulate the field changing
+            intercept.Invoke(null, new object[] { equipment, equipmentType });
+
+            Assert.Equal(equipmentType, equipment._equipmentType);
+        });
+
+        // Assert
+        foreach (var client in TestEnvironment.Clients)
+        {
+            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
+
+            Assert.Equal(equipment._equipmentType, equipmentType);
+        }
+
+    }
+}
