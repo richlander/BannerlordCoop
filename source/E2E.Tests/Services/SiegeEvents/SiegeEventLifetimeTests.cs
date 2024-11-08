@@ -25,8 +25,10 @@ public class SiegeEventLifetimeTests : IDisposable
 
         disabledMethods = new List<MethodBase>
         {
-            // Add disabled methods
+            AccessTools.Method(typeof(MobileParty), nameof(MobileParty.OnPartyJoinedSiegeInternal)),
         };
+
+        disabledMethods.AddRange(AccessTools.GetDeclaredConstructors(typeof(SiegeEvent)));
     }
 
     public void Dispose()

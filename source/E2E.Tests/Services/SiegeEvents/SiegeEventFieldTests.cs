@@ -29,8 +29,10 @@ public class SiegeEventFieldTests : IDisposable
 
         disabledMethods = new List<MethodBase>
         {
-            // Add disabled methods
+            AccessTools.Method(typeof(MobileParty), nameof(MobileParty.OnPartyJoinedSiegeInternal)),
         };
+
+        disabledMethods.AddRange(AccessTools.GetDeclaredConstructors(typeof(SiegeEvent)));
 
         // Create SiegeEvent on the server
         siegeEventId = TestEnvironment.CreateRegisteredObject<SiegeEvent>(disabledMethods);
