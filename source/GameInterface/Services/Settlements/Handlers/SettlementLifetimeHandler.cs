@@ -4,7 +4,6 @@ using Common.Network;
 using Common.Util;
 using GameInterface.Services.ObjectManager;
 using GameInterface.Services.Settlements.Messages;
-using GameInterface.Services.Sieges.Messages;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Siege;
 
