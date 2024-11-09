@@ -18,7 +18,13 @@ internal class ParallelRobustnessPatches
     static bool ParallelCheckExitingSettlements(CampaignTickCacheDataStore __instance, int startInclusive, int endExclusive)
     {
         for (int index = startInclusive; index < endExclusive; ++index)
-            Campaign.Current.MobileParties[index].CheckExitingSettlementParallel(ref __instance._exitingSettlementCount, ref __instance._exitingSettlementMobilePartyList);
+        {
+            MobileParty mobileParty = Campaign.Current.MobileParties[index];
+
+            if (mobileParty.Party == null) continue;
+
+            mobileParty.CheckExitingSettlementParallel(ref __instance._exitingSettlementCount, ref __instance._exitingSettlementMobilePartyList);
+        }
 
         return false;
     }
