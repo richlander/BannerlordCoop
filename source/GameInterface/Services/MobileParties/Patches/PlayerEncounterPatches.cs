@@ -1,19 +1,17 @@
 ﻿using Common.Logging;
 using Common.Messaging;
-using GameInterface.Services.Entity;
 using GameInterface.Services.MobileParties.Extensions;
 using GameInterface.Services.MobileParties.Messages.Behavior;
 using HarmonyLib;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
-using static HarmonyLib.Code;
 
 namespace GameInterface.Services.MobileParties.Patches;
 
@@ -49,29 +47,37 @@ internal class EncounterManagerPatches
     [HarmonyPatch(nameof(EncounterManager.StartSettlementEncounter))]
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instrs)
     {
-        List<CodeInstruction> instructions = instrs.ToList();
-
-        int startIdx = instructions.FindIndex(i => i.opcode == Call.opcode && i.operand as MethodInfo == Start);
-
-        if (startIdx == -1) return instrs;
-
-        instructions.RemoveRange(startIdx, 2);
-
-        int initIdx = instructions.FindIndex(i => i.opcode == Callvirt.opcode && i.operand as MethodInfo == Init);
-
-        if (initIdx == -1) return instrs;
-
-        instructions[initIdx].opcode = Call.opcode;
-        instructions[initIdx].operand = typeof(EncounterManagerPatches)
+        var intercept = typeof(EncounterManagerPatches)
             .GetMethod(nameof(PlayerEncounterIntercept), BindingFlags.NonPublic | BindingFlags.Static);
 
-        return instructions;
+        foreach (CodeInstruction instr in instrs)
+        {
+            if (instr.Calls(Start))
+            {
+                var newInstr = new CodeInstruction(OpCodes.Nop);
+                newInstr.labels = instr.labels;
+                newInstr.blocks = instr.blocks;
+                yield return newInstr;
+                continue;
+            }
+            if (instr.Calls(Init))
+            {
+                var newInstr = new CodeInstruction(OpCodes.Call, intercept);
+                newInstr.labels = instr.labels;
+                newInstr.blocks = instr.blocks;
+                yield return newInstr;
+                continue;
+            }
+
+            yield return instr;
+        }
     }
 
-    private static void PlayerEncounterIntercept(PartyBase attackerParty, PartyBase defenderParty, Settlement settlement)
+    private static void PlayerEncounterIntercept(PlayerEncounter __instance, PartyBase attackerParty, PartyBase defenderParty, Settlement settlement = null)
     {
         if (inSettlement) return;
 
+        attackerParty.MobileParty.Ai.DefaultBehaviorNeedsUpdate = true;
         var message = new StartSettlementEncounterAttempted(
             attackerParty.MobileParty.StringId,
             settlement.StringId);
