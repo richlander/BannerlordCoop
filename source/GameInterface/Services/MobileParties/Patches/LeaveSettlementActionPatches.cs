@@ -6,6 +6,7 @@ using GameInterface.Services.MobileParties.Messages.Behavior;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Settlements;
 
 namespace GameInterface.Services.MobileParties.Patches;
 
@@ -32,6 +33,12 @@ public class LeaveSettlementActionPatches
 
     public static void OverrideApplyForParty(MobileParty party)
     {
-        
+        GameLoopRunner.RunOnMainThread(() =>
+        {
+            using (new AllowedThread())
+            {
+                LeaveSettlementAction.ApplyForParty(party);
+            }
+        }, blocking: true);
     }
 }

@@ -24,73 +24,20 @@ internal class EncounterManagerPatches
 {
     private static ILogger Logger = LogManager.GetLogger<EncounterManagerPatches>();
 
-    private static bool inSettlement = false;
-    private static MethodInfo Start => typeof(PlayerEncounter).GetMethod(nameof(PlayerEncounter.Start));
-    private static MethodInfo Init => typeof(PlayerEncounter).GetMethod(
-        "Init",
-        BindingFlags.NonPublic | BindingFlags.Instance,
-        null,
-        new Type[] { typeof(PartyBase), typeof(PartyBase), typeof(Settlement) },
-        null);
-
-    /// <summary>
-    /// In the <see cref="EncounterManager.StartSettlementEncounter"/> method
-    /// Replaces
-    ///     PlayerEncounter.Start();
-    ///     PlayerEncounter.Current.Init(attackerParty.Party, settlement.Party, settlement);
-    /// With
-    ///     EncounterManagerPatches.PlayerEncounterIntercept(attackerParty.Party, settlement.Party, settlement);
-    /// </summary>
-    /// <param name="instrs">previous instructions</param>
-    /// <returns>patched instructions</returns>
-    [HarmonyTranspiler]
+    [HarmonyPrefix]
     [HarmonyPatch(nameof(EncounterManager.StartSettlementEncounter))]
-    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instrs)
+    private static bool Prefix(MobileParty attackerParty, Settlement settlement)
     {
-        var intercept = typeof(EncounterManagerPatches)
-            .GetMethod(nameof(PlayerEncounterIntercept), BindingFlags.NonPublic | BindingFlags.Static);
+        if (ModInformation.IsServer) return true;
 
-        foreach (CodeInstruction instr in instrs)
-        {
-            if (instr.Calls(Start))
-            {
-                var newInstr = new CodeInstruction(OpCodes.Nop);
-                newInstr.labels = instr.labels;
-                newInstr.blocks = instr.blocks;
-                yield return newInstr;
-                continue;
-            }
-            if (instr.Calls(Init))
-            {
-                var newInstr = new CodeInstruction(OpCodes.Call, intercept);
-                newInstr.labels = instr.labels;
-                newInstr.blocks = instr.blocks;
-                yield return newInstr;
-                continue;
-            }
+        if (attackerParty.IsPartyControlled() == false) return false;
 
-            yield return instr;
-        }
-    }
-
-    private static void PlayerEncounterIntercept(PlayerEncounter __instance, PartyBase attackerParty, PartyBase defenderParty, Settlement settlement = null)
-    {
-        if (inSettlement) return;
-
-        attackerParty.MobileParty.Ai.DefaultBehaviorNeedsUpdate = true;
         var message = new StartSettlementEncounterAttempted(
-            attackerParty.MobileParty.StringId,
+            attackerParty.StringId,
             settlement.StringId);
         MessageBroker.Instance.Publish(attackerParty, message);
 
-        inSettlement = true;
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerEncounter), nameof(PlayerEncounter.Finish))]
-    private static void PlayerEncounterFinishPatch(bool forcePlayerOutFromSettlement)
-    {
-        inSettlement = false;
+        return false;
     }
 
     [HarmonyPrefix]
