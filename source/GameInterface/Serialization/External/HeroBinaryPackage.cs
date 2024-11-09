@@ -82,9 +82,6 @@ namespace GameInterface.Serialization.External
 
             Hero_ExSpouses.SetValue(Object, new MBList<Hero>(ResolveIds<Hero>(exSpousesIds)));
             Hero_Children.SetValue(Object, new MBList<Hero>(ResolveIds<Hero>(childrenIds)));
-
-            if (Object.CharacterObject != null)
-                Object.PartyBelongedTo?.AddElementToMemberRoster(Object.CharacterObject, 1);
         }
     }
 }
