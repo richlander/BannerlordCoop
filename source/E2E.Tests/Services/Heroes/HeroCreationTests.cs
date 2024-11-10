@@ -27,13 +27,15 @@ public class HeroCreationTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
-        var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
-        MBObjectManager.Instance.RegisterObject(characterObject);
+        
 
         // Act
         Hero? serverHero = null;
         server.Call(() =>
         {
+            var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
+            MBObjectManager.Instance.RegisterObject(characterObject);
+
             var hero = HeroCreator.CreateSpecialHero(characterObject);
 
             hero.BornSettlement = Settlement.GetFirst;
@@ -61,13 +63,19 @@ public class HeroCreationTests : IDisposable
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
 
-        var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
-        MBObjectManager.Instance.RegisterObject(characterObject);
+        CharacterObject characterObject = null;
 
+        server.Call(() =>
+        {
+            characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
+            MBObjectManager.Instance.RegisterObject(characterObject);
+        });
+        
         // Act
         Hero? clientHero = null;
         client1.Call(() =>
         {
+            
             var hero = HeroCreator.CreateSpecialHero(characterObject);
 
             hero.BornSettlement = Settlement.GetFirst;
