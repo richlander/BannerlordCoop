@@ -9,10 +9,11 @@ using Coop.Core.Server;
 using GameInterface;
 using GameInterface.Services.GameDebug.Messages;
 using GameInterface.Services.UI.Messages;
+using System;
 
 namespace Coop.Core
 {
-    public class CoopartiveMultiplayerExperience
+    public class CoopartiveMultiplayerExperience : IDisposable
     {
         private readonly IMessageBroker messageBroker;
         private INetworkConfiguration configuration;
@@ -29,6 +30,18 @@ namespace Coop.Core
             messageBroker.Subscribe<HostSaveGame>(Handle);
             messageBroker.Subscribe<EndCoopMode>(Handle);
         }
+
+        public bool Running { get
+            {
+                if (container == null) return false;
+
+                var logic = container.Resolve<ILogic>();
+
+                return logic.RunningState;
+            }
+        }
+
+        public void Dispose() => DestroyContainer();
 
         private void Handle(MessagePayload<AttemptJoin> obj)
         {
