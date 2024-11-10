@@ -19,10 +19,11 @@ namespace GameInterface.Services.Workshops
 
         public override void RegisterAll()
         {
-            foreach(WorkshopType workshopType in WorkshopType.All)
-            {
-                RegisterNewObject(workshopType, out var _);
-            }
+            // THIS BREAKS SAVING AND LOADING FOR SOME REASON, DO NOT UNCOMMENT UNTIL WE FIGURE OUT WHY AND HOW TO FIX
+            //foreach(WorkshopType workshopType in WorkshopType.All)
+            //{
+            //    RegisterNewObject(workshopType, out var _);
+            //}
         }
 
         protected override string GetNewId(WorkshopType party)

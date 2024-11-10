@@ -32,7 +32,7 @@ public class InitialServerState : ServerStateBase
         network.Start();
 
         // Remove server party
-        //messageBroker.Publish(this, new RemoveMainParty());
+        messageBroker.Publish(this, new RemoveMainParty());
 
         // Change to server running state
         Logic.SetState<ServerRunningState>();
