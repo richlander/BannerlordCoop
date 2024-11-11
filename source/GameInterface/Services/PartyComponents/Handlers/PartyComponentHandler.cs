@@ -10,6 +10,7 @@ using Serilog;
 using System;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Party.PartyComponents;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Library;
 
 namespace GameInterface.Services.PartyComponents.Handlers;
@@ -90,14 +91,22 @@ internal class PartyComponentHandler : IHandler
 
     private void Handle(MessagePayload<PartyComponentCreated> payload)
     {
-        var isServer = ModInformation.IsServer;
 
         objectManager.AddNewObject(payload.What.Instance, out var id);
 
         var typeIndex = partyTypes.IndexOf(payload.What.Instance.GetType());
         var data = new PartyComponentData(typeIndex, id);
+        
         network.SendAll(new NetworkCreatePartyComponent(data));
 
+        // This is needed to enforce calling MilitiaPartyComponent settlement patch since otherwise the patch is never called
+        if (payload.What.SettlementId != null)
+        {
+            MilitiaPartyComponent militiaParty = payload.What.Instance as MilitiaPartyComponent;
+            if (objectManager.TryGetObject<Settlement>(payload.What.SettlementId, out var settlement)) militiaParty.Settlement = settlement;
+            else Logger.Error("Could not find Settlement with id {settlementId} \n"
+                + "Callstack: {callstack}", payload.What.SettlementId, Environment.StackTrace);
+        }
     }
 
     private void Handle(MessagePayload<NetworkCreatePartyComponent> payload)

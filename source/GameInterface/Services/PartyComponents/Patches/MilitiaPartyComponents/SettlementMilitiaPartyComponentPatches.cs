@@ -11,16 +11,16 @@ using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Party.PartyComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 
-namespace GameInterface.Services.PartyComponents.Patches.Lifetime;
+namespace GameInterface.Services.PartyComponents.Patches.MilitiaPartyComponents;
 
 [HarmonyPatch(typeof(MilitiaPartyComponent))]
-internal class MilitiaPartyComponentPatches
+internal class MilitiaPartyComponentPropertyPatches
 {
-    private static readonly ILogger Logger = LogManager.GetLogger<MilitiaPartyComponentPatches>();
+    private static readonly ILogger Logger = LogManager.GetLogger<MilitiaPartyComponentPropertyPatches>();
 
     [HarmonyPatch(nameof(MilitiaPartyComponent.Settlement), MethodType.Setter)]
     [HarmonyPrefix]
-    static bool SettlementPrefix(MilitiaPartyComponent __instance, Settlement value)
+    private static bool SettlementPrefix(MilitiaPartyComponent __instance, Settlement value)
     {
         // Call original if we call this function
         if (CallOriginalPolicy.IsOriginalAllowed()) return true;
