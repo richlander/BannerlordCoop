@@ -38,12 +38,11 @@ internal class MilitiaPartyComponentHandler : IHandler
         var component = payload.What.Instance;
         if (objectManager.TryGetId(component, out var componentID) == false)
         {
-            Logger.Error("Changing settlement failed on server. {name} was not registered with PartyComponentRegistry\n"
+            Logger.Error("Changing settlement for MilitiaPartyComponent failed on server. {name} was not registered with PartyComponentRegistry\n"
                 + "Callstack: {callstack}", typeof(MilitiaPartyComponent), Environment.StackTrace);
 
             return;
         }
-
         var message = new NetworkChangeSettlementMilitiaPartyComponent(componentID, payload.What.SettlementId);
         network.SendAll(message);
         return;
@@ -65,6 +64,13 @@ internal class MilitiaPartyComponentHandler : IHandler
             Logger.Error("Changing settlement failed on client. {name} was not registered with ObjectManager\n"
                 + "Callstack: {callstack}", typeof(Settlement), Environment.StackTrace);
 
+            return;
+        }
+
+        if (component.Settlement == settlement)
+        {
+            Logger.Error("{name} already changed for {component} \n"
+                + "Callstack: {callstack}", typeof(Settlement), typeof(MilitiaPartyComponent), Environment.StackTrace);
             return;
         }
 

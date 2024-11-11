@@ -1,14 +1,5 @@
-﻿using Common;
-using Common.Util;
-using E2E.Tests.Environment;
+﻿using E2E.Tests.Environment;
 using E2E.Tests.Util;
-using GameInterface.Services.MobileParties.Messages.Lifetime;
-using System.IO;
-using System.Runtime.Serialization;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Actions;
-using TaleWorlds.CampaignSystem.MapEvents;
-using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Party.PartyComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using Xunit.Abstractions;
@@ -76,7 +67,6 @@ public class MilitiaPartyComponentTests : IDisposable
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
 
-
         Settlement? testSettlement = null; 
         Settlement? settlement = null;
         string? militiaCompId = null;
@@ -87,9 +77,8 @@ public class MilitiaPartyComponentTests : IDisposable
             settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
             testSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
 
-            // The settlement is not synced during ctor. Check how other public properties have been implemented to sync durinng ctor.
             MilitiaPartyComponent militiaPartyComponent = new MilitiaPartyComponent(settlement);
-            militiaPartyComponent.Settlement = settlement;
+
             Assert.True(server.ObjectManager.TryGetId(militiaPartyComponent, out militiaCompId));
 
             Assert.Equal(settlement.StringId, militiaPartyComponent.Settlement.StringId);

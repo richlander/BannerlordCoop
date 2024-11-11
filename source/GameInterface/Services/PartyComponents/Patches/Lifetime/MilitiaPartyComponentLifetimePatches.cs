@@ -22,8 +22,9 @@ internal class MilitiaPartyComponentLifetimePatches
 {
     private static readonly ILogger Logger = LogManager.GetLogger<MilitiaPartyComponentLifetimePatches>();
 
-    private static IEnumerable<MethodBase> TargetMethods() => AccessTools.GetDeclaredConstructors(typeof(MilitiaPartyComponent));
 
+    [HarmonyPatch(typeof(MilitiaPartyComponent), MethodType.Constructor, typeof(Settlement))]
+    [HarmonyPrefix]
     private static bool Prefix(MilitiaPartyComponent __instance, Settlement settlement)
     {
         // Call original if we call this function
@@ -36,7 +37,7 @@ internal class MilitiaPartyComponentLifetimePatches
             return true;
         }
 
-        var message = new PartyComponentCreated(__instance);
+        var message = new PartyComponentCreated(__instance, settlement.StringId);
 
         MessageBroker.Instance.Publish(__instance, message);
 
