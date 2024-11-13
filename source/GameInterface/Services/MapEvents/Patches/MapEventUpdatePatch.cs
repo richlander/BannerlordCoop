@@ -27,25 +27,4 @@ namespace GameInterface.Services.MapEvents.Patches
             return true;
         }
     }
-
-    [HarmonyPatch(typeof(MobileParty))]
-    public class EncounterManagerTest
-    {
-        [HarmonyPrefix]
-        [HarmonyPatch("TaleWorlds.CampaignSystem.Map.IMapEntity.OnPartyInteraction")]
-        static bool PrefixUpdate(MobileParty __instance, MobileParty engagingParty)
-        {
-            if (ModInformation.IsClient)
-            {
-                MobileParty mainParty = MobileParty.MainParty;
-                ;
-            }
-            else
-            {
-                ;
-            }
-
-            return true;
-        }
-    }
 }

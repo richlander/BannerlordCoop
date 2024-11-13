@@ -25,8 +25,6 @@ namespace GameInterface.Services.MobileParties.Patches
         {
             if (AllowedThread.IsThisThreadAllowed()) return true;
 
-            if (CallOriginalPolicy.IsOriginalAllowed()) return true;
-
             BattleSideEnum enemySide = BattleSideEnum.None;
 
             if (MobileParty.MainParty.MapEvent.PlayerSide == BattleSideEnum.Defender)
