@@ -175,13 +175,10 @@ namespace GameInterface.Services.Towns.Handlers
                 Logger.Error("Unable to find Town ({townId})", obj.TownId);
                 return;
             }
-            if (obj.GovernorId != null)
+            if (obj.GovernorId != null && objectManager.TryGetObject(obj.GovernorId, out governor) == false)
             {
-                if (objectManager.TryGetObject(obj.GovernorId, out governor) == false)
-                {
-                    Logger.Error("Unable to find Hero ({governorId})", obj.GovernorId);
-                    return;
-                }
+                Logger.Error("Unable to find Hero ({governorId})", obj.GovernorId);
+                return;
             }
             TownPatches.ChangeTownGovernor(town, governor);
         }

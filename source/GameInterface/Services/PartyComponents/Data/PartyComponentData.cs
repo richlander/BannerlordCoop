@@ -1,6 +1,4 @@
 ﻿using ProtoBuf;
-using System.Runtime.InteropServices.ComTypes;
-using TaleWorlds.CampaignSystem.Settlements;
 
 namespace GameInterface.Services.PartyComponents.Data;
 
