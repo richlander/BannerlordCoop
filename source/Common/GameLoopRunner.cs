@@ -45,11 +45,6 @@ public class GameLoopRunner : IUpdateable
                 toBeRun.Add(m_Queue.Dequeue());
             }
         }
-
-        if (toBeRun.Count > 0)
-        {
-            Logger.Debug("Processing {count} actions in the game loop", toBeRun.Count);
-        }
         
         foreach ((Action, EventWaitHandle) task in toBeRun)
         {
@@ -74,6 +69,8 @@ public class GameLoopRunner : IUpdateable
         }
         else
         {
+            
+
             EventWaitHandle ewh = blocking ?
                 new EventWaitHandle(false, EventResetMode.ManualReset) :
                 null;

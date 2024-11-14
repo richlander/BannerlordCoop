@@ -5,7 +5,7 @@ using Common.Util;
 using GameInterface.Services.ObjectManager;
 using GameInterface.Services.PartyComponents.Data;
 using GameInterface.Services.PartyComponents.Messages;
-using GameInterface.Services.PartyComponents.Patches.Lifetime;
+using GameInterface.Services.PartyComponents.Patches;
 using Serilog;
 using System;
 using TaleWorlds.CampaignSystem.Party;
@@ -49,15 +49,17 @@ internal class PartyComponentHandler : IHandler
     {
         messageBroker.Unsubscribe<PartyComponentCreated>(Handle);
         messageBroker.Unsubscribe<NetworkCreatePartyComponent>(Handle);
+
+        messageBroker.Unsubscribe<PartyComponentMobilePartyChanged>(Handle);
+        messageBroker.Unsubscribe<NetworkChangePartyComponentMobileParty>(Handle);
     }
 
     private void Handle(MessagePayload<NetworkChangePartyComponentMobileParty> payload)
     {
-        // Check if Settlement sync is needed here as well for MilitiaPartyComponent
         var componentId = payload.What.ComponentId;
         var partyId = payload.What.PartyId;
 
-        if(objectManager.TryGetObject<PartyComponent>(componentId, out var component) == false)
+        if (objectManager.TryGetObject<PartyComponent>(componentId, out var component) == false)
         {
             Logger.Error("Could not find PartyComponent with id {componentId}", componentId);
             return;
@@ -72,14 +74,12 @@ internal class PartyComponentHandler : IHandler
         PartyComponentPatches.OverrideSetParty(component, party);
     }
 
-    
-
     private void Handle(MessagePayload<PartyComponentMobilePartyChanged> payload)
     {
         var component = payload.What.Component;
         var party = payload.What.Party;
-        
-        if(objectManager.TryGetId(component, out var componentId) == false)
+
+        if (objectManager.TryGetId(component, out var componentId) == false)
         {
             Logger.Error("PartyComponent was not registered with party PartyComponentRegistry");
             return;
@@ -90,23 +90,21 @@ internal class PartyComponentHandler : IHandler
 
     private void Handle(MessagePayload<PartyComponentCreated> payload)
     {
+
         objectManager.AddNewObject(payload.What.Instance, out var id);
-        // TODO: Check if party type is MilitiaPartyComponent and if thats the case use different patching to make sure (Home) Settlement is  sync as well
-        // Note: Only found that PartyComponent is registered in obj manager, but not sure it is really created on clients gameInterface
+
         var typeIndex = partyTypes.IndexOf(payload.What.Instance.GetType());
+        var data = new PartyComponentData(typeIndex, id);
+        
+        network.SendAll(new NetworkCreatePartyComponent(data));
 
-        if (typeIndex == 5)
+        // This is needed to enforce calling MilitiaPartyComponent settlement patch since otherwise the patch is never called
+        if (payload.What.SettlementId != null)
         {
-            objectManager.TryGetId(payload.What.Instance.HomeSettlement, out var SettlementId);
-            var MilitiaCompData = new PartyComponentData(typeIndex, id, SettlementId);
-            
-            network.SendAll(new NetworkCreatePartyComponent(MilitiaCompData));
-        }
-        else
-        {
-
-            var data = new PartyComponentData(typeIndex, id);
-            network.SendAll(new NetworkCreatePartyComponent(data));
+            MilitiaPartyComponent militiaParty = payload.What.Instance as MilitiaPartyComponent;
+            if (objectManager.TryGetObject<Settlement>(payload.What.SettlementId, out var settlement)) militiaParty.Settlement = settlement;
+            else Logger.Error("Could not find Settlement with id {settlementId} \n"
+                + "Callstack: {callstack}", payload.What.SettlementId, Environment.StackTrace);
         }
     }
 
@@ -114,26 +112,10 @@ internal class PartyComponentHandler : IHandler
     {
         var data = payload.What.Data;
         var typeIdx = data.TypeIndex;
-        // obj is off specific Party Component type like fe MilitiaPartyComponent
 
-        if (typeIdx == 5)
-        {
-            var militiaObj = ObjectHelper.SkipConstructor(partyTypes[typeIdx]);
+        var obj = ObjectHelper.SkipConstructor(partyTypes[typeIdx]);
 
-            if (!objectManager.TryGetObject<Settlement>(data.SettlementId, out var settlementObj)) 
-            { 
-                Logger.Error("Failed to retrieve Settlement");
-                return; 
-            }
+        objectManager.AddExisting(data.Id, obj);
 
-            //militiaObj.Settlement = settlementObj;
-            objectManager.AddExisting(data.Id, militiaObj);
-        }
-        else
-        {
-            PartyComponent obj = (PartyComponent)ObjectHelper.SkipConstructor(partyTypes[typeIdx]);
-            objectManager.AddExisting(data.Id, obj);
-        }
-        
     }
 }
