@@ -1,5 +1,4 @@
-﻿using Common;
-using Common.Logging;
+﻿using Common.Logging;
 using Common.Messaging;
 using Common.Network;
 using Common.Util;
@@ -9,9 +8,6 @@ using GameInterface.Services.PartyComponents.Messages;
 using GameInterface.Services.PartyComponents.Patches.Lifetime;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Party.PartyComponents;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -88,13 +84,11 @@ internal class PartyComponentHandler : IHandler
             Logger.Error("PartyComponent was not registered with party PartyComponentRegistry");
             return;
         }
-
         var message = new NetworkChangePartyComponentMobileParty(componentId, party.StringId);
         network.SendAll(message);
     }
 
     private void Handle(MessagePayload<PartyComponentCreated> payload)
-
     {
         objectManager.AddNewObject(payload.What.Instance, out var id);
         // TODO: Check if party type is MilitiaPartyComponent and if thats the case use different patching to make sure (Home) Settlement is  sync as well

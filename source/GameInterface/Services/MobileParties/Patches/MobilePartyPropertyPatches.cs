@@ -352,7 +352,7 @@ public class MobilePartyPropertyPatches
 
     [HarmonyPatch(nameof(MobileParty.CurrentSettlement), MethodType.Setter)]
     [HarmonyPrefix]
-    private static bool SetCurentSettlementPrefix(MobileParty __instance, Settlement value)
+    private static bool SetCurrentSettlementPrefix(MobileParty __instance, Settlement value)
     {
         if (value == __instance._currentSettlement) return false;
         if (CallOriginalPolicy.IsOriginalAllowed()) return true;
