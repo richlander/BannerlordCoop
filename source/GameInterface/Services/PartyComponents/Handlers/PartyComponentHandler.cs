@@ -90,7 +90,6 @@ internal class PartyComponentHandler : IHandler
 
     private void Handle(MessagePayload<PartyComponentCreated> payload)
     {
-
         objectManager.AddNewObject(payload.What.Instance, out var id);
 
         var typeIndex = partyTypes.IndexOf(payload.What.Instance.GetType());
@@ -116,6 +115,5 @@ internal class PartyComponentHandler : IHandler
         var obj = ObjectHelper.SkipConstructor(partyTypes[typeIdx]);
 
         objectManager.AddExisting(data.Id, obj);
-
     }
 }

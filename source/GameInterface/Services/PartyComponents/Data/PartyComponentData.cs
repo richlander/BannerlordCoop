@@ -12,5 +12,4 @@ public record PartyComponentData(int TypeIndex, string Id)
 
     [ProtoMember(2)]
     public string Id { get; } = Id;
-
 }
