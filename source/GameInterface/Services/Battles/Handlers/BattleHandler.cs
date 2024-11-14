@@ -8,10 +8,13 @@ using GameInterface.Services.MobileParties.Patches;
 using GameInterface.Services.ObjectManager;
 using LiteNetLib;
 using Serilog;
+using System;
+using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.List;
 
 namespace GameInterface.Services.Battles.Handlers
 {
@@ -80,14 +83,30 @@ namespace GameInterface.Services.Battles.Handlers
 
             objectManager.TryGetObject(obj.MapEventString, out MapEvent mapEvent);
 
+            MapEventSide playerSide = null;
+
+            if(mapEvent.AttackerSide.LeaderParty == PartyBase.MainParty)
+            {
+                playerSide = mapEvent.AttackerSide;
+            }
+            else if(mapEvent.DefenderSide.LeaderParty == PartyBase.MainParty)
+            {
+                playerSide = mapEvent.DefenderSide;
+            }
+            else
+            {
+                Logger.Error("Player is not a leader party, expected error. Needs to be handled eventually" +
+                    "Loop through sides and find which contains player party");
+            }
+
             GameLoopRunner.RunOnMainThread(() =>
             {
                 using (new AllowedThread())
                 {
                     Campaign.Current.PlayerEncounter._mapEvent = mapEvent;
-                    
+
                     //Get which side player is on
-                    MobileParty.MainParty.Party._mapEventSide = mapEven
+                    MobileParty.MainParty.Party._mapEventSide = playerSide;
 
                     EncounterGameMenuBehavior menu = Campaign.Current.CampaignBehaviorManager.GetBehavior<EncounterGameMenuBehavior>();
                     Campaign.Current.PlayerEncounter.StartBattleInternal();

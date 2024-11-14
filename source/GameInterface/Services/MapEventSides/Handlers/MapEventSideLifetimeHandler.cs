@@ -72,6 +72,18 @@ internal class MapEventSideLifetimeHandler : IHandler
 
         var newMapEventSide = new MapEventSide(mapEvent, battleSideEnum, mobileParty.Party);
 
+        //TODO: remove this in favor of syncing collection
+        switch(battleSideEnum)
+        {
+            case BattleSideEnum.Attacker:
+                mapEvent._sides[1] = newMapEventSide;
+                break;
+
+            case BattleSideEnum.Defender:
+                mapEvent._sides[0] = newMapEventSide;
+                break;
+        }
+
         objectManager.AddExisting(payload.What.MapEventSideId, newMapEventSide);
     }
 

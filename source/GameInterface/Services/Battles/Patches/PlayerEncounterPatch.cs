@@ -17,12 +17,18 @@ namespace GameInterface.Services.MobileParties.Patches
     [HarmonyPatch(typeof(PlayerEncounter))]
     public class PlayerEncounterPatch
     {
+        private static bool testBool = false;
 
         [HarmonyPatch("StartBattleInternal")]
         [HarmonyPrefix]
         public static bool Prefix(ref PlayerEncounter __instance)
         {
             if (AllowedThread.IsThisThreadAllowed()) return true;
+
+            if (ModInformation.IsServer) return true;
+
+            //if (testBool) return false;
+            //testBool = true;
 
             var message = new PlayerStartBattle();
 
@@ -32,42 +38,47 @@ namespace GameInterface.Services.MobileParties.Patches
         }
     }
 
-    //[HarmonyPatch(typeof(EncounterGameMenuBehavior))]
-    //public class TestPatching2
-    //{
-    //    [HarmonyPatch("game_menu_encounter_leave_on_condition")]
-    //    [HarmonyPrefix]
-    //    public static bool Prefix(MenuCallbackArgs args)
-    //    {
-    //        if (AllowedThread.IsThisThreadAllowed()) return true;
-
-    //        var message = new PlayerStartBattle();
-
-    //        MessageBroker.Instance.Publish(null, message);
-
-    //        return false;
-    //    }
-
-    //    [HarmonyPatch("game_menu_encounter_leave_on_consequence")]
-    //    [HarmonyPrefix]
-    //    public static bool Prefix2(MenuCallbackArgs args)
-    //    {
-    //        if (AllowedThread.IsThisThreadAllowed()) return true;
-
-    //        return false;
-    //    }
-    //}
-
-    [HarmonyPatch(typeof(MapEventHelper))]
-    public class Testing3
+    [HarmonyPatch(typeof(EncounterGameMenuBehavior))]
+    public class TestPatching2
     {
-        [HarmonyPatch("CanLeaveBattle")]
+        [HarmonyPatch("game_menu_encounter_leave_on_condition")]
         [HarmonyPrefix]
-        public static void Prefix(MobileParty mobileParty)
+        public static bool Prefix(ref bool __result, MenuCallbackArgs args)
         {
-            if (ModInformation.IsClient)
+            //if (AllowedThread.IsThisThreadAllowed()) return true;
+
+            //var message = new PlayerStartBattle();
+
+            //MessageBroker.Instance.Publish(null, message);
+
+            //return false;
+
+            __result = true;
+
+            return false;
+        }
+
+        //    [HarmonyPatch("game_menu_encounter_leave_on_consequence")]
+        //    [HarmonyPrefix]
+        //    public static bool Prefix2(MenuCallbackArgs args)
+        //    {
+        //        if (AllowedThread.IsThisThreadAllowed()) return true;
+
+        //        return false;
+        //    }
+        //}
+
+        [HarmonyPatch(typeof(MapEventHelper))]
+        public class Testing3
+        {
+            [HarmonyPatch("CanLeaveBattle")]
+            [HarmonyPrefix]
+            public static void Prefix(MobileParty mobileParty)
             {
-                ;
+                if (ModInformation.IsClient)
+                {
+                    ;
+                }
             }
         }
     }
