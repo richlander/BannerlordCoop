@@ -21,22 +21,22 @@ internal class PartyBaseLifetimePatches
     private static IEnumerable<MethodBase> TargetMethods() => AccessTools.GetDeclaredConstructors(typeof(PartyBase));
 
     [HarmonyPrefix]
-    static void Prefix(ref PartyBase __instance)
+    static bool Prefix(ref PartyBase __instance)
     {
         // Call original if we call this function
-        if (CallOriginalPolicy.IsOriginalAllowed()) return;
+        if (CallOriginalPolicy.IsOriginalAllowed()) return true;
 
         if (ModInformation.IsClient)
         {
             Logger.Error("Client created unmanaged {name}\n"
                 + "Callstack: {callstack}", typeof(Equipment), Environment.StackTrace);
 
-            return;
+            return false;
         }
 
         var message = new PartyBaseCreated(__instance);
         MessageBroker.Instance.Publish(__instance, message);
 
-        return;
+        return true;
     }
 }
