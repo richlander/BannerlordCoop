@@ -41,7 +41,7 @@ namespace GameInterface.Services.TroopRosters.Handlers
             var payload = obj.What;
 
             if (objectManager.AddNewObject(payload.TroopRoster, out string rosterId) == false) return;
-            if (objectManager.TryGetId(payload.PartyBase, out string partyId) == false) return;
+            objectManager.TryGetId(payload.PartyBase, out string partyId);
 
             var message = new NetworkCreateTroopRoster(rosterId, partyId);
             network.SendAll(message);

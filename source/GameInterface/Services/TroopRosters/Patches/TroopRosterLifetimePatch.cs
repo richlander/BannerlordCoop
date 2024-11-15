@@ -31,7 +31,7 @@ namespace GameInterface.Services.TroopRosters.Patches
             {
                 Logger.Error("Client created unmanaged {name}\n"
                     + "Callstack: {callstack}", typeof(TroopRoster), Environment.StackTrace);
-                return true;
+                return false;
             }
 
             var message = new TroopRosterCreated(__instance, ownerParty);
@@ -52,7 +52,7 @@ namespace GameInterface.Services.TroopRosters.Patches
             {
                 Logger.Error("Client created unmanaged {name}\n"
                     + "Callstack: {callstack}", typeof(TroopRoster), Environment.StackTrace);
-                return true;
+                return false;
             }
 
             var message = new TroopRosterCreated(__instance);
