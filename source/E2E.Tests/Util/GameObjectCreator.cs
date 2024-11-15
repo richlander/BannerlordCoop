@@ -44,6 +44,7 @@ internal class GameObjectCreator
         { typeof(Building), new BuildingBuilder() },
         { typeof(ItemCategory), new ItemCategoryBuilder() },
         { typeof(MapEventParty), new MapEventPartyBuilder() }
+        { typeof(TroopRoster), new TroopRosterBuilder() }
     };
 
     public static T CreateInitializedObject<T>()
