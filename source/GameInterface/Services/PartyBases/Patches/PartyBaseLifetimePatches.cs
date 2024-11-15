@@ -18,10 +18,7 @@ internal class PartyBaseLifetimePatches
 {
     static ILogger Logger = LogManager.GetLogger<PartyBase>();
 
-    static IEnumerable<MethodBase> TargetMethods() => new[] {
-       AccessTools.Constructor(typeof(PartyBase), new Type[] { typeof(MobileParty) }),
-       AccessTools.Constructor(typeof(PartyBase), new Type[] { typeof(Settlement) }),
-    };
+    private static IEnumerable<MethodBase> TargetMethods() => AccessTools.GetDeclaredConstructors(typeof(PartyBase));
 
     [HarmonyPrefix]
     static void Prefix(ref PartyBase __instance)
