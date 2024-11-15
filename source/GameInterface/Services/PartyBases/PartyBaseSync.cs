@@ -17,7 +17,6 @@ internal class PartyBaseSync : IAutoSync
         autoSyncBuilder.AddProperty(AccessTools.Property(typeof(PartyBase), nameof(PartyBase.PrisonRoster)));
         autoSyncBuilder.AddProperty(AccessTools.Property(typeof(PartyBase), nameof(PartyBase.RandomValue)));
 
-        autoSyncBuilder.AddField(AccessTools.Field(typeof(PartyBase), nameof(PartyBase._cachedPartyMemberSizeLimit)));
         autoSyncBuilder.AddField(AccessTools.Field(typeof(PartyBase), nameof(PartyBase._cachedPrisonerSizeLimit)));
         autoSyncBuilder.AddField(AccessTools.Field(typeof(PartyBase), nameof(PartyBase._cachedTotalStrength)));
         autoSyncBuilder.AddField(AccessTools.Field(typeof(PartyBase), nameof(PartyBase._customOwner)));

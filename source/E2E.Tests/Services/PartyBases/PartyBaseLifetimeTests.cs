@@ -1,4 +1,6 @@
-﻿using E2E.Tests.Environment;
+﻿using Autofac.Features.OwnedInstances;
+using E2E.Tests.Environment;
+using E2E.Tests.Environment.Instance;
 using E2E.Tests.Util;
 using HarmonyLib;
 using System.Runtime.InteropServices;
@@ -16,9 +18,51 @@ public class PartyBasePropertyTests : IDisposable
 {
     E2ETestEnvironment TestEnvironment { get; }
 
+    EnvironmentInstance Server => TestEnvironment.Server;
+
+    IEnumerable<EnvironmentInstance> Clients => TestEnvironment.Clients;
+
+    private readonly string PartyId;
+    private readonly string ItemRosterId;
+    private readonly string MapEventSideId;
+    private readonly string SettlementId;
+    private readonly string TroopRosterId;
+    private readonly string HeroId;
+    private readonly string PartyBaseId;
+
     public PartyBasePropertyTests(ITestOutputHelper output)
     {
         TestEnvironment = new E2ETestEnvironment(output);
+
+        var party = GameObjectCreator.CreateInitializedObject<MobileParty>();
+        var itemRoster = GameObjectCreator.CreateInitializedObject<ItemRoster>();
+        var mapEventSide = GameObjectCreator.CreateInitializedObject<MapEventSide>();
+        var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+        var troopRoster = GameObjectCreator.CreateInitializedObject<TroopRoster>();
+        var hero = GameObjectCreator.CreateInitializedObject<Hero>();
+        var partyBase = new PartyBase(default(MobileParty));
+
+
+        // Create objects on the server
+        Assert.True(Server.ObjectManager.AddNewObject(party, out PartyId));
+        Assert.True(Server.ObjectManager.AddNewObject(itemRoster, out ItemRosterId));
+        Assert.True(Server.ObjectManager.AddNewObject(mapEventSide, out MapEventSideId));
+        Assert.True(Server.ObjectManager.AddNewObject(settlement, out SettlementId));
+        Assert.True(Server.ObjectManager.AddNewObject(troopRoster, out TroopRosterId));
+        Assert.True(Server.ObjectManager.AddNewObject(hero, out HeroId));
+        Assert.True(Server.ObjectManager.AddNewObject(partyBase, out PartyBaseId));
+
+        // Create objects on all clients
+        foreach (var client in Clients)
+        {
+            Assert.True(client.ObjectManager.AddExisting(PartyId, party));
+            Assert.True(client.ObjectManager.AddExisting(ItemRosterId, itemRoster));
+            Assert.True(client.ObjectManager.AddExisting(MapEventSideId, mapEventSide));
+            Assert.True(client.ObjectManager.AddExisting(SettlementId, settlement));
+            Assert.True(client.ObjectManager.AddExisting(TroopRosterId, troopRoster));
+            Assert.True(client.ObjectManager.AddExisting(HeroId, hero));
+            Assert.True(client.ObjectManager.AddExisting(PartyBaseId, partyBase));
+        }
     }
 
     public void Dispose()
@@ -42,9 +86,6 @@ public class PartyBasePropertyTests : IDisposable
         string? prisonRosterId = null;
         string? heroId = null;
 
-        var cachedPartyLimit = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._cachedPartyMemberSizeLimit));
-        var cachedPrisonerLimit = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._cachedPrisonerSizeLimit));
-        var cachedStrength = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._cachedTotalStrength));
         var customOwner = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._customOwner));
         var index = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._index));
         var lastEatingTime = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastEatingTime));
@@ -66,23 +107,18 @@ public class PartyBasePropertyTests : IDisposable
         var lastEatingTimeIntercept = TestEnvironment.GetIntercept(lastEatingTime);
         var lastRosterVerNoIntercept = TestEnvironment.GetIntercept(lastRosterVerNo);
         var lastMenPerTierVerNoIntercept = TestEnvironment.GetIntercept(lastMenPerTierVerNo);
-        var cachedPartyLimitIntercept = TestEnvironment.GetIntercept(cachedPartyLimit);
-        var cachedPrisonerLimitIntercept = TestEnvironment.GetIntercept(cachedPrisonerLimit);
-        var cachedStrengthIntercept = TestEnvironment.GetIntercept(cachedStrength);
         var customOwnerIntercept = TestEnvironment.GetIntercept(customOwner);
         var remainingFoodPercentageIntercept = TestEnvironment.GetIntercept(remainingFoodPercentageField);
 
         server.Call(() =>
         {
-            var party = GameObjectCreator.CreateInitializedObject<MobileParty>();
-            var itemRoster = GameObjectCreator.CreateInitializedObject<ItemRoster>();
-            var mapEventSide = GameObjectCreator.CreateInitializedObject<MapEventSide>();
-            var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-            var troopRoster = GameObjectCreator.CreateInitializedObject<TroopRoster>();
-            var hero = GameObjectCreator.CreateInitializedObject<Hero>();
-
-            partyId = party.StringId;
-            var partyBase = new PartyBase(default(MobileParty));
+            Assert.True(server.ObjectManager.TryGetObject<PartyBase>(partyBaseId, out var partyBase));
+            Assert.True(server.ObjectManager.TryGetObject<MapEventSide>(mapEventSideId, out var mapEventSide));
+            Assert.True(server.ObjectManager.TryGetObject<Hero>(heroId, out var hero));
+            Assert.True(server.ObjectManager.TryGetObject<MobileParty>(partyId, out var party));
+            Assert.True(server.ObjectManager.TryGetObject<Settlement>(settlementId, out var settlement));
+            Assert.True(server.ObjectManager.TryGetObject<ItemRoster>(itemRosterId, out var itemRoster));
+            Assert.True(server.ObjectManager.TryGetObject<TroopRoster>(TroopRosterId, out var troopRoster));
 
             // Simulate the field changing
             remainingFoodPercentageIntercept.Invoke(null, new object[] { partyBase, 5 });
@@ -94,11 +130,7 @@ public class PartyBasePropertyTests : IDisposable
             lastEatingTimeIntercept.Invoke(null, new object[] { partyBase, new CampaignTime(5) });
             lastRosterVerNoIntercept.Invoke(null, new object[] { partyBase, 5 });
             lastMenPerTierVerNoIntercept.Invoke(null, new object[] { partyBase, 5 });
-            cachedPartyLimitIntercept.Invoke(null, new object[] { partyBase, 5 });
-            cachedPrisonerLimitIntercept.Invoke(null, new object[] { partyBase, 5 });
-            cachedStrengthIntercept.Invoke(null, new object[] { partyBase, 5f });
             customOwnerIntercept.Invoke(null, new object[] { partyBase, hero });
-
 
             partyBase.MobileParty = party;
             partyBase.Settlement = settlement;
@@ -116,7 +148,7 @@ public class PartyBasePropertyTests : IDisposable
             //Assert.True(server.ObjectManager.TryGetId(party.MapEventSide, out mapEventSideId));
             Assert.True(server.ObjectManager.TryGetId(party.MemberRoster, out memberRosterId));
             Assert.True(server.ObjectManager.TryGetId(party.PrisonRoster, out prisonRosterId));
-            Assert.True(server.ObjectManager.TryGetId(hero, out heroId));
+            Assert.True(server.ObjectManager.TryGetId(partyBase._customOwner, out heroId));
         });
 
         // Assert
@@ -149,9 +181,6 @@ public class PartyBasePropertyTests : IDisposable
             Assert.Equal(clientPrisonRoster, clientPartyBase.PrisonRoster);
             //Assert.Equal(5, clientPartyBase.RandomValue);
             //Assert.Equal(clientSettlement, clientPartyBase.Settlement);
-            Assert.Equal(5, clientPartyBase._cachedPartyMemberSizeLimit);
-            Assert.Equal(5, clientPartyBase._cachedPrisonerSizeLimit);
-            Assert.Equal(5, clientPartyBase._cachedTotalStrength);
             Assert.Equal(clientHero, clientPartyBase._customOwner);
             Assert.Equal(5, clientPartyBase._index);
             Assert.Equal(new CampaignTime(5), clientPartyBase._lastEatingTime);
