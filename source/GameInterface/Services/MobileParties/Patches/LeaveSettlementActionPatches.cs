@@ -6,6 +6,7 @@ using GameInterface.Services.MobileParties.Messages.Behavior;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Settlements;
 
 namespace GameInterface.Services.MobileParties.Patches;
 
@@ -36,9 +37,8 @@ public class LeaveSettlementActionPatches
         {
             using (new AllowedThread())
             {
-                if (party.CurrentSettlement is null) return;
                 LeaveSettlementAction.ApplyForParty(party);
             }
-        });
+        }, blocking: true);
     }
 }
