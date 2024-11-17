@@ -18,12 +18,13 @@ namespace GameInterface.Services.Clans.Patches
         {
             if(AllowedThread.IsThisThreadAllowed()) return true;
 
-            if (ModInformation.IsServer) return true;
-
             if(Campaign.Current.MainParty.ActualClan == __instance)
             {
                 MessageBroker.Instance.Publish(null, new ClanNameChanged(Campaign.Current.MainParty.ActualClan.StringId, name.ToString(), informalName.ToString()));
+                return false;
             }
+
+            if (ModInformation.IsServer) return true;
 
             return true;
         }

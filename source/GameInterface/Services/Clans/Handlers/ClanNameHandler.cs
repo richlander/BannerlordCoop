@@ -47,7 +47,7 @@ namespace GameInterface.Services.Clans.Handlers
         private void Handle(MessagePayload<NetworkChangeClanName> obj)
         {
             var payload = obj.What;
-            bool isServer = ModInformation.IsServer; //SERVER
+
             if (objectManager.TryGetObject<Clan>(payload.ClanId, out var clan) == false)
             {
                 Logger.Error("Unable to find clan ({clanId})", payload.ClanId);
