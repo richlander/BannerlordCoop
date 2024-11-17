@@ -20,27 +20,6 @@ namespace GameInterface.Services.TroopRosters.Patches
     {
         private static ILogger Logger = LogManager.GetLogger<TroopRosterLifetimePatches>();
 
-        [HarmonyPatch(typeof(TroopRoster), MethodType.Constructor, typeof(PartyBase))]
-        [HarmonyPrefix]
-        private static bool CreateTroopRosterPrefix(ref TroopRoster __instance, PartyBase ownerParty)
-        {
-            // Call original if we call this function
-            if (CallOriginalPolicy.IsOriginalAllowed()) return true;
-
-            if (ModInformation.IsClient)
-            {
-                Logger.Error("Client created unmanaged {name}\n"
-                    + "Callstack: {callstack}", typeof(TroopRoster), Environment.StackTrace);
-                return false;
-            }
-
-            var message = new TroopRosterCreated(__instance, ownerParty);
-
-            MessageBroker.Instance.Publish(__instance, message);
-
-            return true;
-        }
-
         [HarmonyPatch(typeof(TroopRoster), MethodType.Constructor)]
         [HarmonyPrefix]
         private static bool CreateTroopRosterPrefix(ref TroopRoster __instance)
