@@ -82,11 +82,16 @@ namespace E2E.Tests.Services.CraftingService
                 serverCrafting.CurrentWeaponDesign = weaponDesign;
             });
 
+            server.ObjectManager.TryGetId(serverCrafting._craftedItemObject, out string serverObjectId);
+
             foreach (var client in TestEnvironment.Clients)
             {
                 Assert.True(client.ObjectManager.TryGetObject(craftingId, out Crafting clientCrafting));
                 Assert.Equal(serverCrafting._currentHistoryIndex, clientCrafting._currentHistoryIndex);
-                Assert.Equal(serverCrafting._craftedItemObject, clientCrafting._craftedItemObject);
+
+                client.ObjectManager.TryGetId(clientCrafting._craftedItemObject, out string clientObjectId);
+
+                Assert.Equal(serverObjectId, clientObjectId);
                 Assert.Equal(serverCrafting.CurrentWeaponDesign, clientCrafting.CurrentWeaponDesign);
                 Assert.Equal(serverCrafting.CurrentItemModifierGroup.ItemModifiers.Count, clientCrafting.CurrentItemModifierGroup.ItemModifiers.Count);
                 Assert.Equal(serverCrafting.CraftedWeaponName.ToString(), clientCrafting.CraftedWeaponName.ToString());
