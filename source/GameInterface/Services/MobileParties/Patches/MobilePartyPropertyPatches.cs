@@ -75,6 +75,7 @@ public class MobilePartyPropertyPatches
 
         var message = new MobilePartyPropertyChanged(PropertyType.Army, __instance.StringId, value?.GetStringId());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -458,8 +459,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Surgeon), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Surgeon, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
