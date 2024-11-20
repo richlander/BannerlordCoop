@@ -1,20 +1,11 @@
-﻿using Autofac.Features.OwnedInstances;
-using E2E.Tests.Environment;
+﻿using E2E.Tests.Environment;
 using E2E.Tests.Environment.Instance;
 using E2E.Tests.Util;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.Settlements.Buildings;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
-using TaleWorlds.ObjectSystem;
 using Xunit.Abstractions;
 
 namespace E2E.Tests.Services.Clans
@@ -31,6 +22,7 @@ namespace E2E.Tests.Services.Clans
         private string SettlementId;
         private string CharacterObjectId;
         private string HeroId;
+        private string CultureId;
 
         public ClanSyncTests(ITestOutputHelper output)
         {
@@ -40,12 +32,14 @@ namespace E2E.Tests.Services.Clans
             var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
             var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
             var hero = GameObjectCreator.CreateInitializedObject<Hero>();
+            var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
 
             // Create objects on the server
             Assert.True(Server.ObjectManager.AddNewObject(kingdom, out KingdomId));
             Assert.True(Server.ObjectManager.AddNewObject(settlement, out SettlementId));
             Assert.True(Server.ObjectManager.AddNewObject(characterObject, out CharacterObjectId));
             Assert.True(Server.ObjectManager.AddNewObject(hero, out HeroId));
+            Assert.True(Server.ObjectManager.AddNewObject(culture, out CultureId));
 
             // Create objects on all clients
             foreach (var client in Clients)
@@ -54,6 +48,7 @@ namespace E2E.Tests.Services.Clans
                 Assert.True(client.ObjectManager.AddExisting(SettlementId, settlement));
                 Assert.True(client.ObjectManager.AddExisting(CharacterObjectId, characterObject));
                 Assert.True(client.ObjectManager.AddExisting(HeroId, hero));
+                Assert.True(client.ObjectManager.AddExisting(CultureId, culture));
             }
         }
 
@@ -76,7 +71,6 @@ namespace E2E.Tests.Services.Clans
                 clanId = clan.StringId;
                 clan.Name = new TextObject("testName");
                 clan.InformalName = new TextObject("testInformal");
-                clan.Culture = new CultureObject();
                 clan.LastFactionChangeTime = new CampaignTime(100);
                 clan.AutoRecruitmentExpenses = 10;
                 clan.IsNoble = true;
@@ -95,6 +89,8 @@ namespace E2E.Tests.Services.Clans
                 clan.Renown = 55f;
                 clan.NotAttackableByPlayerUntilTime = new CampaignTime(300);
 
+                Assert.True(server.ObjectManager.TryGetObject<CultureObject>(CultureId, out var cultureObject));
+                clan.Culture = cultureObject;
             });
 
             var isEliminatedField = AccessTools.Field(typeof(Clan), nameof(Clan._isEliminated));
@@ -118,7 +114,7 @@ namespace E2E.Tests.Services.Clans
             var basicTroopIntercept = TestEnvironment.GetIntercept(basicTroopField);
             var leaderIntercept = TestEnvironment.GetIntercept(leaderField);
             var bannerIntercept = TestEnvironment.GetIntercept(bannerField);
-            var tierIntercept = TestEnvironment.GetIntercept(tierField); 
+            var tierIntercept = TestEnvironment.GetIntercept(tierField);
             var aggressivenessIntercept = TestEnvironment.GetIntercept(aggressivenessField);
             var tributeWalletIntercept = TestEnvironment.GetIntercept(tributeWalletField);
             var homeIntercept = TestEnvironment.GetIntercept(homeField);
@@ -154,7 +150,7 @@ namespace E2E.Tests.Services.Clans
                 Assert.True(client.ObjectManager.TryGetObject(clanId, out Clan clientClan));
                 Assert.Equal(serverClan.Name.Value, clientClan.Name.Value);
                 Assert.Equal(serverClan.InformalName.Value, clientClan.InformalName.Value);
-                Assert.Equal(serverClan.Culture, clientClan.Culture);
+                Assert.Equal(serverClan.Culture.StringId, clientClan.Culture.StringId);
                 Assert.Equal(serverClan.LastFactionChangeTime, clientClan.LastFactionChangeTime);
                 Assert.Equal(serverClan.AutoRecruitmentExpenses, clientClan.AutoRecruitmentExpenses);
                 Assert.Equal(serverClan.IsNoble, clientClan.IsNoble);
