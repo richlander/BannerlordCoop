@@ -84,14 +84,12 @@ internal class PartyComponentHandler : IHandler
             Logger.Error("PartyComponent was not registered with party PartyComponentRegistry");
             return;
         }
-
         var message = new NetworkChangePartyComponentMobileParty(componentId, party.StringId);
         network.SendAll(message);
     }
 
     private void Handle(MessagePayload<PartyComponentCreated> payload)
     {
-
         objectManager.AddNewObject(payload.What.Instance, out var id);
 
         var typeIndex = partyTypes.IndexOf(payload.What.Instance.GetType());
@@ -117,6 +115,5 @@ internal class PartyComponentHandler : IHandler
         var obj = ObjectHelper.SkipConstructor(partyTypes[typeIdx]);
 
         objectManager.AddExisting(data.Id, obj);
-
     }
 }

@@ -73,7 +73,6 @@ public class MilitiaPartyComponentTests : IDisposable
 
         server.Call(() =>
         {
-            
             settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
             testSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
 
@@ -100,5 +99,4 @@ public class MilitiaPartyComponentTests : IDisposable
             Assert.Equal(clientMilitiaParty.Settlement.StringId, settlement.StringId);
         }
     }
-
 }
