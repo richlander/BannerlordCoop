@@ -72,6 +72,7 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Army), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Army, __instance.StringId, value?.GetStringId());
         MessageBroker.Instance.Publish(__instance, message);
         return ModInformation.IsServer;
@@ -89,8 +90,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.CustomName), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.CustomName, __instance.StringId, value?.Value);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -107,8 +110,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.LastVisitedSettlement), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.LastVisitedSettlement, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -124,8 +129,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Aggressiveness), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Aggressiveness, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -141,8 +148,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Objective), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Objective, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -177,8 +186,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.IsActive), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.IsActive, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -194,8 +205,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.IsPartyTradeActive), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.IsPartyTradeActive, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -211,6 +224,7 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.PartyTradeGold), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.PartyTradeGold, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
 
@@ -229,6 +243,7 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.PartyTradeTaxGold), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.PartyTradeTaxGold, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
 
@@ -268,8 +283,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.VersionNo), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.VersionNo, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -285,8 +302,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.ShouldJoinPlayerBattles), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.ShouldJoinPlayerBattles, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -302,8 +321,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.IsDisbanding), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.IsDisbanding, __instance.StringId, value.ToString());
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -320,8 +341,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.CurrentSettlement), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.CurrentSettlement, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -337,8 +360,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.AttachedTo), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.AttachedTo, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -354,10 +379,13 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.BesiegerCamp), Environment.StackTrace);
             return false;
         }
+
         if (ContainerProvider.TryResolve<IObjectManager>(out var objectManager) == false) return true;
         if (objectManager.TryGetId(value, out var besiegerCampId) == false) return true;
+
         var message = new MobilePartyPropertyChanged(PropertyType.BesiegerCamp, __instance.StringId, besiegerCampId);
         MessageBroker.Instance.Publish(__instance, message); 
+
         return ModInformation.IsServer;
     }
 
@@ -373,8 +401,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Scout), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Scout, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -390,8 +420,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Engineer), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Engineer, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -407,8 +439,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.Quartermaster), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.Quartermaster, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
@@ -441,8 +475,10 @@ public class MobilePartyPropertyPatches
                 + "Callstack: {callstack}", nameof(MobileParty.ActualClan), Environment.StackTrace);
             return false;
         }
+
         var message = new MobilePartyPropertyChanged(PropertyType.ActualClan, __instance.StringId, value?.StringId);
         MessageBroker.Instance.Publish(__instance, message);
+
         return ModInformation.IsServer;
     }
 
