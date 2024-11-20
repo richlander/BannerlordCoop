@@ -105,7 +105,6 @@ internal class PartyComponentHandler : IHandler
             else Logger.Error("Could not find Settlement with id {settlementId} \n"
                 + "Callstack: {callstack}", payload.What.SettlementId, Environment.StackTrace);
         }
-        
     }
 
     private void Handle(MessagePayload<NetworkCreatePartyComponent> payload)
