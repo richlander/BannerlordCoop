@@ -2,15 +2,12 @@
 using Common.Messaging;
 using Common.Network;
 using Common.Util;
-using GameInterface.Services.Armies.Messages.Lifetime;
 using GameInterface.Services.ItemObjects.Messages;
 using GameInterface.Services.ObjectManager;
 using Serilog;
-using System;
-using TaleWorlds.CampaignSystem.Settlements.Buildings;
 using TaleWorlds.Core;
 
-namespace GameInterface.Services.Buildings.Handlers
+namespace GameInterface.Services.ItemObjects.Handlers
 {
     internal class ItemObjectLifetimeHandler : IHandler
     {
@@ -24,17 +21,17 @@ namespace GameInterface.Services.Buildings.Handlers
             this.messageBroker = messageBroker;
             this.objectManager = objectManager;
             this.network = network;
-            messageBroker.Subscribe<ItemObjectCreated>(Handle_BuildingCreated);
-            messageBroker.Subscribe<NetworkCreateItemObject>(Handle_CreateBuilding);
+            messageBroker.Subscribe<ItemObjectCreated>(Handle_ItemObjectCreated);
+            messageBroker.Subscribe<NetworkCreateItemObject>(Handle_CreateItemObject);
         }
 
         public void Dispose()
         {
-            messageBroker.Unsubscribe<ItemObjectCreated>(Handle_BuildingCreated);
-            messageBroker.Unsubscribe<NetworkCreateItemObject>(Handle_CreateBuilding);
+            messageBroker.Unsubscribe<ItemObjectCreated>(Handle_ItemObjectCreated);
+            messageBroker.Unsubscribe<NetworkCreateItemObject>(Handle_CreateItemObject);
         }
 
-        private void Handle_BuildingCreated(MessagePayload<ItemObjectCreated> obj)
+        private void Handle_ItemObjectCreated(MessagePayload<ItemObjectCreated> obj)
         {
             var payload = obj.What;
 
@@ -44,7 +41,7 @@ namespace GameInterface.Services.Buildings.Handlers
             network.SendAll(message);
         }
 
-        private void Handle_CreateBuilding(MessagePayload<NetworkCreateItemObject> obj)
+        private void Handle_CreateItemObject(MessagePayload<NetworkCreateItemObject> obj)
         {
             var payload = obj.What;
 

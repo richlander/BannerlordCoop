@@ -15,7 +15,6 @@ namespace GameInterface.Services.ItemObjects
 
         public override void RegisterAll()
         {
-            //Are these registered somewhere?
             foreach(ItemObject item in Campaign.Current.AllItems)
             {
                 if (RegisterNewObject(item, out var _) == false)
