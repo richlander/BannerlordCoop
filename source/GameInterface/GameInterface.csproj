@@ -282,7 +282,4 @@
     <!--<Publicize Include="TaleWorlds.TwoDimension"/>                                                                           -->
     <!--<Publicize Include="TaleWorlds.TwoDimension.Standalone"/>                                                             -->
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\PartyComponents\Patches\MilitiaPartyComponents\" />
-  </ItemGroup>
 </Project>
