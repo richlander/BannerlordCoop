@@ -96,7 +96,7 @@ internal class PartyComponentHandler : IHandler
         var data = new PartyComponentData(typeIndex, id);
         
         network.SendAll(new NetworkCreatePartyComponent(data));
-
+        
         // This is needed to enforce calling MilitiaPartyComponent settlement patch since otherwise the patch is never called
         if (payload.What.SettlementId != null)
         {
@@ -105,6 +105,7 @@ internal class PartyComponentHandler : IHandler
             else Logger.Error("Could not find Settlement with id {settlementId} \n"
                 + "Callstack: {callstack}", payload.What.SettlementId, Environment.StackTrace);
         }
+        
     }
 
     private void Handle(MessagePayload<NetworkCreatePartyComponent> payload)
