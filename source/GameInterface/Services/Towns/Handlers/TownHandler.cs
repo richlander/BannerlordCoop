@@ -169,6 +169,7 @@ namespace GameInterface.Services.Towns.Handlers
         {
             var obj = payload.What;
 
+
             if (objectManager.TryGetObject(obj.TownId, out Town town) == false)
             {
                 Logger.Error("Unable to find Town ({townId})", obj.TownId);
