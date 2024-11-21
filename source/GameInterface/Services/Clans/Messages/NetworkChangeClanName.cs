@@ -1,13 +1,10 @@
 ﻿using Common.Messaging;
 using ProtoBuf;
 
-namespace Coop.Core.Server.Services.Clans.Messages
+namespace GameInterface.Services.Clans.Messages
 {
-    /// <summary>
-    /// Clan name change is approved by server
-    /// </summary>
     [ProtoContract(SkipConstructor = true)]
-    public record NetworkClanNameChangeApproved : ICommand
+    internal class NetworkChangeClanName : ICommand
     {
         [ProtoMember(1)]
         public string ClanId { get; }
@@ -16,7 +13,7 @@ namespace Coop.Core.Server.Services.Clans.Messages
         [ProtoMember(3)]
         public string InformalName { get; }
 
-        public NetworkClanNameChangeApproved(string clanId, string name, string informalName)
+        public NetworkChangeClanName(string clanId, string name, string informalName)
         {
             ClanId = clanId;
             Name = name;
