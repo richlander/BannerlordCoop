@@ -28,15 +28,18 @@ public class LordPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
-        var leaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
-        leaderHero.Clan = GameObjectCreator.CreateInitializedObject<Clan>();
-        var spawnSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
 
         // Act
         string? partyId = null;
+        Hero leaderHero = null;
+
 
         server.Call(() =>
         {
+            leaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
+
+            leaderHero.Clan = GameObjectCreator.CreateInitializedObject<Clan>();
+            var spawnSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
             var newParty = LordPartyComponent.CreateLordParty(null, leaderHero, new Vec2(5, 5), 5, spawnSettlement, leaderHero);
             partyId = newParty.StringId;
         });
@@ -59,7 +62,12 @@ public class LordPartyComponentTests : IDisposable
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
 
-        var leaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
+        Hero leaderHero = null;
+        server.Call(() =>
+        {
+            leaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
+        });
+
 
         // Act
         PartyComponent? partyComponent = null;
