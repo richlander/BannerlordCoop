@@ -70,7 +70,7 @@ public class SiegeEventFieldTests : IDisposable
             Assert.Null(SiegeEvent.BesiegedSettlement);
 
             /// Simulate the field changing
-            intercept.Invoke(null, new object[] { SiegeEvent, serverBesiegedSettlement});
+            intercept.Invoke(null, new object[] { SiegeEvent, serverBesiegedSettlement });
 
             Assert.Same(serverBesiegedSettlement, SiegeEvent.BesiegedSettlement);
         });
@@ -82,10 +82,10 @@ public class SiegeEventFieldTests : IDisposable
 
             Assert.True(client.ObjectManager.TryGetObject<Settlement>(besiegedSettlementId, out var clientBesiegedSettlement));
 
-            Assert.True(clientBesiegedSettlement == SiegeEvent.BesiegedSettlement);
+            Assert.Same(clientBesiegedSettlement, SiegeEvent.BesiegedSettlement);
         }
     }
-    
+
     [Fact]
     public void ServerChangeSiegeEventBesiegerCamp_SyncAllClients()
     {
@@ -112,7 +112,7 @@ public class SiegeEventFieldTests : IDisposable
             Assert.Null(SiegeEvent.BesiegerCamp);
 
             /// Simulate the field changing
-            intercept.Invoke(null, new object[] { SiegeEvent, serverBesiegerCamp});
+            intercept.Invoke(null, new object[] { SiegeEvent, serverBesiegerCamp });
 
             Assert.Same(serverBesiegerCamp, SiegeEvent.BesiegerCamp);
         });
@@ -124,10 +124,10 @@ public class SiegeEventFieldTests : IDisposable
 
             Assert.True(client.ObjectManager.TryGetObject<BesiegerCamp>(besiegerCampId, out var clientBesiegerCamp));
 
-            Assert.True(clientBesiegerCamp == SiegeEvent.BesiegerCamp);
+            Assert.Same(clientBesiegerCamp, SiegeEvent.BesiegerCamp);
         }
     }
-    
+
 
     [Fact]
     public void ServerChangeSiegeEventIsBesiegerDefeated_SyncAllClients()
@@ -136,7 +136,7 @@ public class SiegeEventFieldTests : IDisposable
         var field = AccessTools.Field(typeof(SiegeEvent), nameof(SiegeEvent._isBesiegerDefeated));
         var intercept = TestEnvironment.GetIntercept(field);
         Assert.True(Server.ObjectManager.TryGetObject<SiegeEvent>(siegeEventId, out var serverSiegeEvent));
-        var newValue=Random<Boolean>();
+        var newValue = Random<Boolean>();
 
         // Act
         Server.Call(() =>
@@ -153,7 +153,6 @@ public class SiegeEventFieldTests : IDisposable
             Assert.True(client.ObjectManager.TryGetObject<SiegeEvent>(siegeEventId, out var clientSiegeEvent));
             Assert.Equal(serverSiegeEvent._isBesiegerDefeated, clientSiegeEvent._isBesiegerDefeated);
         }
-    }  
     }
+}
 
-    
