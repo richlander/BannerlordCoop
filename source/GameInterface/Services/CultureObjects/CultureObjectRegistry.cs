@@ -8,7 +8,7 @@ namespace GameInterface.Services.CultureObjects
     internal class CultureObjectRegistry : RegistryBase<CultureObject>
     {
         private const string CultureStringIdPrefix = "CoopCulture";
-        private static int ObjectCounter = 0;
+        private static int InstanceCounter = 0;
 
         public CultureObjectRegistry(IRegistryCollection collection) : base(collection) { }
 
@@ -30,7 +30,7 @@ namespace GameInterface.Services.CultureObjects
 
         protected override string GetNewId(CultureObject culture)
         {
-            return $"{CultureStringIdPrefix}_{Interlocked.Increment(ref ObjectCounter)}";
+            return $"{CultureStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
         }
     }
 }
