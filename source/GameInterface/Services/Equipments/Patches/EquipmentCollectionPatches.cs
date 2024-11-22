@@ -16,6 +16,7 @@ using TaleWorlds.CampaignSystem.MapEvents;
 using GameInterface.Services.MapEventSides.Messages;
 using GameInterface.Services.MapEvents.Messages;
 using TaleWorlds.Core;
+using GameInterface.Services.Equipments.Messages.Events;
 
 namespace GameInterface.Services.Equipments.Patches;
 
@@ -72,7 +73,7 @@ internal class EquipmentCollectionPatches
             return;
         }
 
-        var message = new ItemSlotsArrayUpdated(instance, value, index);
+        var message = new ItemSlotsArrayUpdated(instance, value.Item, value.ItemModifier, index);
         MessageBroker.Instance.Publish(instance, message);
 
         _itemSlots[index] = value;
