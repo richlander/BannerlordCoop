@@ -125,6 +125,7 @@ namespace GameInterface.Services.Equipments.Handlers
             {
                 using (new AllowedThread())
                 {
+                    // TODO: Check if this can be removed after we sync´d itemSlots collection.
                     EquipmentParam_ctor.Invoke(newEquipment, new object[] { propertyEquipment });
                     
                     objectManager.AddExisting(payload.EquipmentId, newEquipment);
