@@ -17,21 +17,21 @@ using GameInterface.Services.MapEventSides.Messages;
 using GameInterface.Services.MapEvents.Messages;
 using TaleWorlds.Core;
 
-namespace GameInterface.Services.MapEvents.Patches;
+namespace GameInterface.Services.Equipments.Patches;
 
 [HarmonyPatch]
 internal class EquipmentCollectionPatches
 {
-    private static readonly ILogger Logger = LogManager.GetLogger<MapEventCollectionPatches>();
+    private static readonly ILogger Logger = LogManager.GetLogger<EquipmentCollectionPatches>();
 
-    static IEnumerable<MethodBase> TargetMethods() => AccessTools.GetDeclaredMethods(typeof(MapEvent));
+    static IEnumerable<MethodBase> TargetMethods() => AccessTools.GetDeclaredMethods(typeof(Equipment));
 
     [HarmonyTranspiler]
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var stack = new Stack<CodeInstruction>();
 
-        var itemslotArrayType = AccessTools.Field(typeof(Equipment), nameof(Equipment._itemSlots));
+        var itemSlotArrayType = AccessTools.Field(typeof(Equipment), nameof(Equipment._itemSlots));
         var arrayAssignIntercept = AccessTools.Method(typeof(EquipmentCollectionPatches), nameof(ArrayAssignIntercept));
         foreach (var instruction in instructions)
         {
@@ -47,7 +47,7 @@ internal class EquipmentCollectionPatches
                 continue;
             }
 
-            if (instruction.opcode == OpCodes.Ldfld && instruction.operand as FieldInfo == itemslotArrayType)
+            if (instruction.opcode == OpCodes.Ldfld && instruction.operand as FieldInfo == itemSlotArrayType)
             {
                 stack.Push(instruction);
             }
@@ -72,7 +72,7 @@ internal class EquipmentCollectionPatches
             return;
         }
 
-        var message = new MapEventSidesArrayUpdated(instance, value, index);
+        var message = new ItemSlotsArrayUpdated(instance, value, index);
         MessageBroker.Instance.Publish(instance, message);
 
         _itemSlots[index] = value;
