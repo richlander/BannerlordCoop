@@ -12,7 +12,7 @@ internal struct CampaignTimeSurrogate
 
     public CampaignTimeSurrogate(CampaignTime campaignTime)
     {
-        Data = campaignTime._numTicks;
+        Data = campaignTime.NumTicks;
     }
 
     public static implicit operator CampaignTimeSurrogate(CampaignTime campaignTime)
