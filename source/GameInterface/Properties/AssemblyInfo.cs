@@ -30,4 +30,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 [assembly: InternalsVisibleTo("Coop.Tests")]
+[assembly: InternalsVisibleTo("Coop.IntegrationTests")]
 [assembly: InternalsVisibleTo("GameInterface.Tests")]
