@@ -6,7 +6,6 @@ using GameInterface.Services.CultureObjects.Messages;
 using GameInterface.Services.ObjectManager;
 using Serilog;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;
 
 namespace GameInterface.Services.BasicCultureObjects.Handlers
 {

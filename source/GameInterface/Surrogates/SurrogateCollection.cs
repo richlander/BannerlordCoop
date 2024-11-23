@@ -1,5 +1,7 @@
 ﻿using ProtoBuf.Meta;
 using System;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -13,6 +15,7 @@ internal class SurrogateCollection : ISurrogateCollection
     {
         AddSurrogate<Vec2, Vec2Surrogate>();
         AddSurrogate<TextObject, TextObjectSurrogate>();
+        AddSurrogate<Banner, BannerSurrogate>();
     }
 
     private void AddSurrogate<T, TSurrogate>()
