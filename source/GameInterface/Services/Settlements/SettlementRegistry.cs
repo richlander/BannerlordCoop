@@ -1,7 +1,5 @@
 ﻿using GameInterface.Services.Registry;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.ObjectSystem;
@@ -9,7 +7,8 @@ using TaleWorlds.ObjectSystem;
 namespace GameInterface.Services.Settlements;
 internal class SettlementRegistry : RegistryBase<Settlement>
 {
-    public static readonly string SettlementStringIdPrefix = "CoopSettlement";
+    private const string SettlementPrefix = $"Coop{nameof(Settlement)}";
+    private static int InstanceCounter = 0;
 
     public SettlementRegistry(IRegistryCollection collection) : base(collection) { }
 
@@ -40,8 +39,7 @@ internal class SettlementRegistry : RegistryBase<Settlement>
 
     protected override string GetNewId(Settlement settlement)
     {
-        settlement.StringId = Campaign.Current.CampaignObjectManager.FindNextUniqueStringId<Settlement>(SettlementStringIdPrefix);
-        return settlement.StringId;
+        return $"{SettlementPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
     }
 
     private void AddToCampaignObjectManager(object obj)

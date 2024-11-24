@@ -1,5 +1,4 @@
-﻿using Autofac.Features.OwnedInstances;
-using E2E.Tests.Environment;
+﻿using E2E.Tests.Environment;
 using E2E.Tests.Util;
 using HarmonyLib;
 using System.Reflection;
@@ -30,17 +29,26 @@ public class CaravanPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
+        var leaderField = AccessTools.Field(typeof(LordPartyComponent), nameof(LordPartyComponent._leader));
+
+        var leaderIntercept = TestEnvironment.GetIntercept(leaderField);
+
         // Act
         string? partyId = null;
+        Hero newLeaderHero = null;
 
         server.Call(() =>
         {
             var owner = GameObjectCreator.CreateInitializedObject<Hero>();
+            newLeaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
             var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
             var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
             settlement.Culture = culture;
             var newParty = CaravanPartyComponent.CreateCaravanParty(owner, settlement, caravanLeader: owner);
             partyId = newParty.StringId;
+
+            leaderIntercept.Invoke(null, new object[] { newParty.LordPartyComponent, newLeaderHero });
+
         }, new MethodBase[]
         {
             AccessTools.Method(typeof(EnterSettlementAction), nameof(EnterSettlementAction.ApplyForParty)),
@@ -52,8 +60,11 @@ public class CaravanPartyComponentTests : IDisposable
 
         foreach (var client in TestEnvironment.Clients)
         {
+            Assert.NotNull(newLeaderHero);
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var newParty));
             Assert.IsType<CaravanPartyComponent>(newParty.PartyComponent);
+
+            Assert.Equal(newLeaderHero.StringId, newParty.LordPartyComponent._leader.StringId);
         }
     }
 
