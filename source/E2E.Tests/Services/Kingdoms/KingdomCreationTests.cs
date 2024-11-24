@@ -1,11 +1,7 @@
-using Autofac;
-using Common.Messaging;
 using E2E.Tests.Environment;
 using E2E.Tests.Util;
-using GameInterface.Services.Armies.Messages.Lifetime;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Settlements;
 using Xunit.Abstractions;
 
 namespace E2E.Tests.Services.Armies;
@@ -36,7 +32,9 @@ public class ArmyCreationTests : IDisposable
             
             var kingdom = GameObjectCreator.CreateInitializedObject<Kingdom>();
             var mobileParty = GameObjectCreator.CreateInitializedObject<MobileParty>();
+            var clan = GameObjectCreator.CreateInitializedObject<Clan>();
 
+            mobileParty.LeaderHero.Clan = clan;
 
             var army = new Army(kingdom, mobileParty, Army.ArmyTypes.Patrolling);
 
