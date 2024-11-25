@@ -41,7 +41,7 @@ namespace GameInterface.Services.Heroes
             autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.BornSettlement)));
             autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.Gold)));
             autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.RandomValue)));
-            //autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.BannerItem)));
+            autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.BannerItem)));
             autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.Father)));
             autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.Mother)));
             autoSyncBuilder.AddProperty(AccessTools.Property(typeof(Hero), nameof(Hero.Spouse)));
