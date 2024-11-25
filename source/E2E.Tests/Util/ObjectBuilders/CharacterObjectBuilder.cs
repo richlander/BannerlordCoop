@@ -16,7 +16,7 @@ internal class CharacterObjectBuilder : IObjectBuilder
     {
         var characterObject = new CharacterObject();
         characterObject.Culture = new CultureObject();
-        characterObject.StringId = "";
+        //characterObject.StringId = "";
 
         characterObject._basicName = new TextObject("Test Character");
         characterObject.DefaultCharacterSkills = new MBCharacterSkills();

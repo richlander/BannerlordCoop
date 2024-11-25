@@ -27,29 +27,6 @@ namespace E2E.Tests.Services.Clans
         public ClanSyncTests(ITestOutputHelper output)
         {
             TestEnvironment = new E2ETestEnvironment(output);
-
-            var kingdom = GameObjectCreator.CreateInitializedObject<Kingdom>();
-            var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-            var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
-            var hero = GameObjectCreator.CreateInitializedObject<Hero>();
-            var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
-
-            // Create objects on the server
-            Assert.True(Server.ObjectManager.AddNewObject(kingdom, out KingdomId));
-            Assert.True(Server.ObjectManager.AddNewObject(settlement, out SettlementId));
-            Assert.True(Server.ObjectManager.AddNewObject(characterObject, out CharacterObjectId));
-            Assert.True(Server.ObjectManager.AddNewObject(hero, out HeroId));
-            Assert.True(Server.ObjectManager.AddNewObject(culture, out CultureId));
-
-            // Create objects on all clients
-            foreach (var client in Clients)
-            {
-                Assert.True(client.ObjectManager.AddExisting(KingdomId, kingdom));
-                Assert.True(client.ObjectManager.AddExisting(SettlementId, settlement));
-                Assert.True(client.ObjectManager.AddExisting(CharacterObjectId, characterObject));
-                Assert.True(client.ObjectManager.AddExisting(HeroId, hero));
-                Assert.True(client.ObjectManager.AddExisting(CultureId, culture));
-            }
         }
 
         public void Dispose()
@@ -67,6 +44,18 @@ namespace E2E.Tests.Services.Clans
             string? clanId = null;
             server.Call(() =>
             {
+                var kingdom = GameObjectCreator.CreateInitializedObject<Kingdom>();
+                var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+                var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
+                var hero = GameObjectCreator.CreateInitializedObject<Hero>();
+                var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
+
+                server.ObjectManager.TryGetId(kingdom, out KingdomId);
+                server.ObjectManager.TryGetId(settlement, out SettlementId);
+                server.ObjectManager.TryGetId(characterObject, out CharacterObjectId);
+                server.ObjectManager.TryGetId(hero, out HeroId);
+                server.ObjectManager.TryGetId(culture, out CultureId);
+
                 var clan = Clan.CreateClan("");
                 clanId = clan.StringId;
                 clan.Name = new TextObject("testName");
@@ -170,17 +159,17 @@ namespace E2E.Tests.Services.Clans
                 Assert.Equal(serverClan.NotAttackableByPlayerUntilTime, clientClan.NotAttackableByPlayerUntilTime);
 
                 Assert.Equal(serverClan._isEliminated, clientClan._isEliminated);
-                Assert.Equal(serverClan._kingdom, clientClan._kingdom);
+                Assert.Equal(serverClan._kingdom.StringId, clientClan._kingdom.StringId);
                 Assert.Equal(serverClan._influence, clientClan._influence);
-                Assert.Equal(serverClan._clanMidSettlement, clientClan._clanMidSettlement);
-                Assert.Equal(serverClan._basicTroop, clientClan._basicTroop);
-                Assert.Equal(serverClan._leader, clientClan._leader);
+                Assert.Equal(serverClan._clanMidSettlement.StringId, clientClan._clanMidSettlement.StringId);
+                Assert.Equal(serverClan._basicTroop.StringId, clientClan._basicTroop.StringId);
+                Assert.Equal(serverClan._leader.StringId, clientClan._leader.StringId);
                 Assert.Equal(serverClan._banner._bannerVisual, clientClan._banner._bannerVisual);
                 Assert.Equal(serverClan._banner._bannerDataList, clientClan._banner._bannerDataList);
                 Assert.Equal(serverClan._tier, clientClan._tier);
                 Assert.Equal(serverClan._aggressiveness, clientClan._aggressiveness);
                 Assert.Equal(serverClan._tributeWallet, clientClan._tributeWallet);
-                Assert.Equal(serverClan._home, clientClan._home);
+                Assert.Equal(serverClan._home.StringId, clientClan._home.StringId);
                 Assert.Equal(serverClan._clanDebtToKingdom, clientClan._clanDebtToKingdom);
             }
         }
