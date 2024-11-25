@@ -63,6 +63,7 @@ namespace E2E.Tests.Services.Heroes
                 Settlement newSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
                 Town newTown = GameObjectCreator.CreateInitializedObject<Town>();
                 MobileParty newMobileParty = GameObjectCreator.CreateInitializedObject<MobileParty>();
+
                 Equipment newBattleEquipment = new Equipment(false);
                 Equipment newCivEquipment = new Equipment(true);
                 BettingFraudIssue newIssue = new BettingFraudIssue(hero);
