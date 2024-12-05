@@ -1,4 +1,5 @@
 ﻿using ProtoBuf.Meta;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -22,5 +23,11 @@ internal class SurrogateCollection : ISurrogateCollection
 
         if (RuntimeTypeModel.Default.CanSerialize(typeof(ItemModifierGroup)) == false)
             RuntimeTypeModel.Default.SetSurrogate<ItemModifierGroup, ItemModifierGroupSurrogate>();
+
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(CampaignTime)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<CampaignTime, CampaignTimeSurrogate>();
+
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(Banner)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<Banner, BannerSurrogate>();
     }
 }
