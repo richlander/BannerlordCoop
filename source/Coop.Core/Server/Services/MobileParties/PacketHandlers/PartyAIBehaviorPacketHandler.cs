@@ -56,8 +56,6 @@ internal class RequestMobilePartyBehaviorPacketHandler : IPacketHandler
     {
         var data = payload.What.BehaviorUpdateData;
 
-        Logger.Debug($"Party Behavior updated");
-
         network.SendAll(new UpdatePartyBehaviorPacket(ref data));
     }
 }

@@ -14,7 +14,7 @@ namespace GameInterface.Services.MobileParties;
 internal class MobilePartyRegistry : RegistryBase<MobileParty>
 {
     private const string PartyStringIdPrefix = "CoopParty";
-    private int InstanceCounter = 0;
+    private static int InstanceCounter = 0;
     private readonly IMessageBroker messageBroker;
 
     public MobilePartyRegistry(IRegistryCollection collection, IMessageBroker messageBroker) : base(collection)
@@ -24,17 +24,10 @@ internal class MobilePartyRegistry : RegistryBase<MobileParty>
 
     public override void RegisterAll()
     {
-        var objectManager = Campaign.Current?.CampaignObjectManager;
-
-        if (objectManager == null)
-        {
-            Logger.Error("Unable to register objects when CampaignObjectManager is null");
-            return;
-        }
-
-        foreach (var party in objectManager.MobileParties)
+        foreach (var party in MobileParty.All)
         {
             base.RegisterExistingObject(party.StringId, party);
+            Interlocked.Increment(ref InstanceCounter);
         }
     }
 

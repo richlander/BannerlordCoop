@@ -1,16 +1,11 @@
-using System.Collections.Generic;
 using Common.Logging;
 using Common.Messaging;
 using GameInterface.Services.MobileParties.Messages.Fields.Commands;
 using GameInterface.Services.ObjectManager;
 using Serilog;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Party.PartyComponents;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.Library;
-using TaleWorlds.Localization;
 
 namespace GameInterface.Services.MobileParties.Handlers;
 
@@ -52,11 +47,19 @@ public class MobilePartyFieldsHandler : IHandler
             Logger.Error("Unable to find {type} with id: {id}", typeof(MobileParty), data.MobilePartyId);
             return;
         }
+
+        if (data.AttachedToId == null)
+        {
+            instance._attachedTo = null;
+            return;
+        }
+
         if (objectManager.TryGetObject<MobileParty>(data.AttachedToId, out var attachedToMobileParty) == false)
         {
             Logger.Error("Unable to find {type} with id: {id}", typeof(Settlement), data.AttachedToId);
             return;
         }
+
         instance._attachedTo = attachedToMobileParty;
     }
 
@@ -150,6 +153,12 @@ public class MobilePartyFieldsHandler : IHandler
         if (objectManager.TryGetObject<MobileParty>(data.MobilePartyId, out var instance) == false)
         {
             Logger.Error("Unable to find {type} with id: {id}", typeof(MobileParty), data.MobilePartyId);
+            return;
+        }
+
+        if (data.CustomHomeSettlementId == null)
+        {
+            instance._customHomeSettlement = null;
             return;
         }
         

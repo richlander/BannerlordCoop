@@ -7,6 +7,9 @@ using GameInterface;
 using GameInterface.AutoSync;
 using GameInterface.Tests.Bootstrap;
 using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Sinks.XUnit;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -27,9 +30,26 @@ internal class E2ETestEnvironment : IDisposable
 
     private TestEnvironment IntegrationEnvironment { get; }
 
+    private class TestOutputSink : ILogEventSink
+    {
+        private readonly ITestOutputHelper output;
+
+        public TestOutputSink(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
+        public void Emit(LogEvent logEvent)
+        {
+            TextWriter textWriter = new StringWriter();
+            logEvent.RenderMessage(textWriter);
+            output.WriteLine(textWriter.ToString());
+        }
+    }
+
     public E2ETestEnvironment(ITestOutputHelper output, int numClients = 2)
     {
-        LogManager.Configuration = new LoggerConfiguration().WriteTo.TestOutput(output);
+        LogManager.Sinks.Add(new TestOutputSink(output));
 
         GameLoopRunner.Instance.SetGameLoopThread();
 

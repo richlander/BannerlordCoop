@@ -30,7 +30,7 @@ public sealed class BatchLogger : IDisposable
 	{
         this.pollInterval = pollInterval;
         poller = new Poller(Poll, pollInterval);
-        poller.Start();
+        //poller.Start();
     }
 
 	/// <summary>

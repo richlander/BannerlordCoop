@@ -1,5 +1,6 @@
 ﻿using Common;
 using GameInterface.Services.Registry;
+using System.Threading;
 using TaleWorlds.CampaignSystem;
 
 namespace GameInterface.Services.Clans;
@@ -10,6 +11,7 @@ namespace GameInterface.Services.Clans;
 internal class ClanRegistry : RegistryBase<Clan>
 {
     private const string ClanStringIdPrefix = "CoopClan";
+    private static int InstanceCount = 0;
 
     public ClanRegistry(IRegistryCollection collection) : base(collection) { }
 
@@ -26,12 +28,13 @@ internal class ClanRegistry : RegistryBase<Clan>
         foreach (var clan in objectManager.Clans)
         {
             RegisterExistingObject(clan.StringId, clan);
+            Interlocked.Increment(ref InstanceCount);
         }
     }
 
     protected override string GetNewId(Clan party)
     {
-        party.StringId = Campaign.Current.CampaignObjectManager.FindNextUniqueStringId<Clan>(ClanStringIdPrefix);
+        party.StringId = $"{ClanStringIdPrefix}_{Interlocked.Increment(ref InstanceCount)}";
         return party.StringId;
     }
 

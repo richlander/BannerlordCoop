@@ -435,6 +435,23 @@ public class FieldTranspilerCreator
 
         var il = methodBuilder.GetILGenerator();
 
+        var neqLabel = il.DefineLabel();
+
+        // if (this.currentValue == newValue) return;
+        il.Emit(OpCodes.Ldarg_0);
+        il.Emit(OpCodes.Ldfld, field);
+        il.Emit(OpCodes.Ldarg_1);
+
+
+        il.Emit(OpCodes.Ceq);
+        il.Emit(OpCodes.Brfalse, neqLabel);
+
+        il.Emit(OpCodes.Ret);
+
+
+        il.MarkLabel(neqLabel);
+
+
         IsClientCheck(il, field);
 
         var networkLocal = TryResolve<INetwork>(il);
@@ -473,6 +490,22 @@ public class FieldTranspilerCreator
         var valueParam = methodBuilder.DefineParameter(1, ParameterAttributes.In, "value");
 
         var il = methodBuilder.GetILGenerator();
+
+        var neqLabel = il.DefineLabel();
+
+        // if (this.currentValue == newValue) return;
+        il.Emit(OpCodes.Ldarg_0);
+        il.Emit(OpCodes.Ldfld, field);
+        il.Emit(OpCodes.Ldarg_1);
+
+
+        il.Emit(OpCodes.Ceq);
+        il.Emit(OpCodes.Brfalse, neqLabel);
+
+        il.Emit(OpCodes.Ret);
+
+
+        il.MarkLabel(neqLabel);
 
         IsClientCheck(il, field);
 
