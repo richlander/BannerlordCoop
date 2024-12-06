@@ -26,7 +26,6 @@ internal class CharacterObjectRegistry : RegistryBase<CharacterObject>
 
     protected override string GetNewId(CharacterObject obj)
     {
-        obj.StringId = $"{CharacterObjectPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
-        return obj.StringId;
+        return $"{CharacterObjectPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
     }
 }
