@@ -44,9 +44,9 @@ namespace E2E.Tests.Services.Clans
             // Act
             server.Call(() =>
             {
+                var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
                 var kingdom = GameObjectCreator.CreateInitializedObject<Kingdom>();
                 var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-                var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
                 var hero = GameObjectCreator.CreateInitializedObject<Hero>();
                 var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
                 var clan = GameObjectCreator.CreateInitializedObject<Clan>();
