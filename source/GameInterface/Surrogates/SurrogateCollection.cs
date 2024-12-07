@@ -16,6 +16,10 @@ internal class SurrogateCollection : ISurrogateCollection
         AddSurrogate<Vec2, Vec2Surrogate>();
         AddSurrogate<CampaignTime, CampaignTimeSurrogate>();
         AddSurrogate<TextObject, TextObjectSurrogate>();
+        
+        AddSurrogate<ItemModifierGroup, ItemModifierGroupSurrogate>();
+        AddSurrogate<ItemModifier, ItemModifierSurrogate>();
+
         AddSurrogate<Banner, BannerSurrogate>();
     }
 

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using TaleWorlds.CampaignSystem.CampaignBehaviors;
 
-namespace GameInterface.Services.Sieges.Patches.Disable;
+namespace GameInterface.Services.SiegeEvents.Patches.Disable;
 
 [HarmonyPatch(typeof(SiegeEventCampaignBehavior))]
 internal class DisableSiegeEventCampaignBehavior

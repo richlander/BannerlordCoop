@@ -11,7 +11,7 @@ namespace GameInterface.Services.Clans;
 internal class ClanRegistry : RegistryBase<Clan>
 {
     private const string ClanStringIdPrefix = "CoopClan";
-    private static int InstanceCount = 0;
+    private static int InstanceCounter = 0;
 
     public ClanRegistry(IRegistryCollection collection) : base(collection) { }
 
@@ -34,7 +34,7 @@ internal class ClanRegistry : RegistryBase<Clan>
 
     protected override string GetNewId(Clan party)
     {
-        party.StringId = $"{ClanStringIdPrefix}_{Interlocked.Increment(ref InstanceCount)}";
+        party.StringId = $"{ClanStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
         return party.StringId;
     }
 
