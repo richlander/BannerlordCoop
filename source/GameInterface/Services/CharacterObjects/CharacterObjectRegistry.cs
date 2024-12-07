@@ -1,9 +1,6 @@
 ﻿using GameInterface.Services.Registry;
-using System;
 using System.Threading;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.Settlements.Buildings;
 
 namespace GameInterface.Services.Armies;
 
