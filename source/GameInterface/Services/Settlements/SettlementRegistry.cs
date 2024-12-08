@@ -11,7 +11,7 @@ namespace GameInterface.Services.Settlements;
 internal class SettlementRegistry : RegistryBase<Settlement>
 {
     public static readonly string SettlementStringIdPrefix = "CoopSettlement";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public SettlementRegistry(IRegistryCollection collection) : base(collection) { }
 

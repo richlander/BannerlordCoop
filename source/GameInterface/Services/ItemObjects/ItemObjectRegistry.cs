@@ -9,7 +9,7 @@ namespace GameInterface.Services.ItemObjects
     internal class ItemObjectRegistry : RegistryBase<ItemObject>
     {
         private const string ItemObjectIdPrefix = "CoopItemObject";
-        private static int InstanceCounter = 0;
+        private int InstanceCounter = 0;
 
         public ItemObjectRegistry(IRegistryCollection collection) : base(collection) { }
 

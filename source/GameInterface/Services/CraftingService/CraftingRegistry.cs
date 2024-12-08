@@ -7,7 +7,7 @@ namespace GameInterface.Services.CraftingService
     internal class CraftingRegistry : RegistryBase<Crafting>
     {
         private const string CraftingIdPrefix = "CoopCrafting";
-        private static int InstanceCounter = 0;
+        private int InstanceCounter = 0;
 
         public CraftingRegistry(IRegistryCollection collection) : base(collection) { }
 

@@ -8,7 +8,7 @@ namespace GameInterface.Services.MobilePartyAIs;
 internal class MobilePartyAiRegistry : RegistryBase<MobilePartyAi>
 {
     private const string MobilePartyAiIdPrefix = "CoopMobilePartyAi";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public MobilePartyAiRegistry(IRegistryCollection collection) : base(collection)
     {

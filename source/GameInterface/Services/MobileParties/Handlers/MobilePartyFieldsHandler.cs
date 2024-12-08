@@ -56,7 +56,7 @@ public class MobilePartyFieldsHandler : IHandler
 
         if (objectManager.TryGetObject<MobileParty>(data.AttachedToId, out var attachedToMobileParty) == false)
         {
-            Logger.Error("Unable to find {type} with id: {id}", typeof(Settlement), data.AttachedToId);
+            Logger.Error("Unable to find {type} with id: {id}", typeof(MobileParty), data.AttachedToId);
             return;
         }
 

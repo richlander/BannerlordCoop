@@ -89,7 +89,6 @@ internal class E2ETestEnvironment : IDisposable
         Server.Call(() =>
         {
             var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
-            MBObjectManager.Instance.RegisterObject(characterObject);
             var mainHero = HeroCreator.CreateSpecialHero(characterObject);
             characterObject.HeroObject = mainHero;
             Game.Current.PlayerTroop = characterObject;

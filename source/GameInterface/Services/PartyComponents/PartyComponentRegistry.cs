@@ -14,7 +14,7 @@ namespace GameInterface.Services.PartyComponents;
 internal class PartyComponentRegistry : RegistryBase<PartyComponent>
 {
     private const string PartyComponentIdPrefix = "CoopPartyComponent";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public PartyComponentRegistry(IRegistryCollection collection) : base(collection) { }
 

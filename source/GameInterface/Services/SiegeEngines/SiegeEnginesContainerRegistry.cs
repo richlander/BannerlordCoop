@@ -9,7 +9,7 @@ namespace GameInterface.Services.SiegeEngines
     internal class SiegeEnginesContainerRegistry : RegistryBase<SiegeEnginesContainer>
     {
         private const string SiegeEnginesContainerIdPrefix = "CoopSiegeEnginesContainer";
-        private static int InstanceCounter = 0;
+        private int InstanceCounter = 0;
 
         public SiegeEnginesContainerRegistry(IRegistryCollection collection) : base(collection)
         {

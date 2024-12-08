@@ -25,11 +25,9 @@ internal class SurrogateCollection : ISurrogateCollection
 
     private void AddSurrogate<T, TSurrogate>()
     {
-        try
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(T)) == false)
         {
             RuntimeTypeModel.Default.SetSurrogate<T, TSurrogate>();
         }
-        catch (InvalidOperationException) { }
-        catch (ArgumentException) { }
     }
 }

@@ -13,7 +13,7 @@ namespace GameInterface.Services.Armies;
 internal class BuildingRegistry : RegistryBase<Building>
 {
     private const string BuildingIdPrefix = "CoopBuilding";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public BuildingRegistry(IRegistryCollection collection) : base(collection) { }
 

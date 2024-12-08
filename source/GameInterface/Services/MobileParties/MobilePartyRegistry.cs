@@ -14,7 +14,7 @@ namespace GameInterface.Services.MobileParties;
 internal class MobilePartyRegistry : RegistryBase<MobileParty>
 {
     private const string PartyStringIdPrefix = "CoopParty";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
     private readonly IMessageBroker messageBroker;
 
     public MobilePartyRegistry(IRegistryCollection collection, IMessageBroker messageBroker) : base(collection)

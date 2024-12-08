@@ -1,6 +1,9 @@
 ﻿using GameInterface.Services.Registry;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 
 namespace GameInterface.Services.Armies;
 
@@ -9,8 +12,14 @@ namespace GameInterface.Services.Armies;
 /// </summary>
 internal class CharacterObjectRegistry : RegistryBase<CharacterObject>
 {
+    public override IEnumerable<Type> ManagedTypes => new Type[]
+    {
+        typeof(BasicCharacterObject),
+        typeof(CharacterObject)
+    };
+
     private const string CharacterObjectPrefix = "CoopCharacterObject";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public CharacterObjectRegistry(IRegistryCollection collection) : base(collection) { }
 

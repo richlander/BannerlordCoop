@@ -96,36 +96,26 @@ namespace GameInterface.Services.Equipments.Handlers
         {
             var payload = obj.What.Data;
 
-            Equipment newEquipment = ObjectHelper.SkipConstructor<Equipment>();
             GameLoopRunner.RunOnMainThread(() =>
             {
-                  using (new AllowedThread())
-                  {
-                      Equipment_ctor.Invoke(newEquipment, Array.Empty<object>());
-                  }
-                  objectManager.AddExisting(payload.EquipmentId, newEquipment);
-               
+                using (new AllowedThread())
+                {
+                    var newEquipment =  new Equipment();
+                    objectManager.AddExisting(payload.EquipmentId, newEquipment);
+                }
             });
         }
         private void Handle(MessagePayload<NetworkCreateEquipmentWithParam> obj)
         {
             var payload = obj.What.Data;
 
-            Equipment propertyEquipment = null;
-            if (payload.EquipmentPropertyId != null)
-            {
-                if (objectManager.TryGetObject(payload.EquipmentPropertyId, out propertyEquipment) == false)
-                {
-                    Logger.Error("Equipment param not found in object manager. Breaking field sync inside ctor.");
-                    return;
-                }
-            }
-            Equipment newEquipment = ObjectHelper.SkipConstructor<Equipment>();
+            objectManager.TryGetObject<Equipment>(payload.EquipmentPropertyId, out var propertyEquipment);
+
             GameLoopRunner.RunOnMainThread(() =>
             {
                 using (new AllowedThread())
                 {
-                    EquipmentParam_ctor.Invoke(newEquipment, new object[] { propertyEquipment });
+                    var newEquipment = new Equipment(propertyEquipment);
                     
                     objectManager.AddExisting(payload.EquipmentId, newEquipment);
                 }
