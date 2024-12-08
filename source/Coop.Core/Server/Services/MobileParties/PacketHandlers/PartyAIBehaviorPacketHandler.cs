@@ -21,7 +21,6 @@ internal class RequestMobilePartyBehaviorPacketHandler : IPacketHandler
     private readonly IPacketManager packetManager;
     private readonly INetwork network;
     private readonly IMessageBroker messageBroker;
-    private readonly ILogger logger;
 
     public RequestMobilePartyBehaviorPacketHandler(
         IPacketManager packetManager,
