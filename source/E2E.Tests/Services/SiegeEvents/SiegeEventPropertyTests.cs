@@ -1,17 +1,18 @@
 using TaleWorlds.CampaignSystem.Siege;
+using TaleWorlds.CampaignSystem;
 using E2E.Tests.Environment;
 using E2E.Tests.Environment.Instance;
 using E2E.Tests.Util;
 using HarmonyLib;
-using Common.Util;
 using System.Reflection;
 using Xunit.Abstractions;
+using Common.Util;
 using static Common.Extensions.ReflectionExtensions;
 using TaleWorlds.CampaignSystem.Party;
 
 namespace E2E.Tests.Services.SiegeEvents;
 
-public class SiegeEventLifetimeTests : IDisposable
+public class SiegeEventPropertyTests : IDisposable
 {
     private readonly List<MethodBase> disabledMethods;
     private E2ETestEnvironment TestEnvironment { get; }
@@ -19,7 +20,9 @@ public class SiegeEventLifetimeTests : IDisposable
     private IEnumerable<EnvironmentInstance> Clients => TestEnvironment.Clients;
     private IEnumerable<EnvironmentInstance> AllEnvironmentInstances => Clients.Append(Server);
 
-    public SiegeEventLifetimeTests(ITestOutputHelper output)
+    private readonly string siegeEventId;
+
+    public SiegeEventPropertyTests(ITestOutputHelper output)
     {
         TestEnvironment = new E2ETestEnvironment(output);
 
@@ -29,6 +32,9 @@ public class SiegeEventLifetimeTests : IDisposable
         };
 
         disabledMethods.AddRange(AccessTools.GetDeclaredConstructors(typeof(SiegeEvent)));
+
+        // Create SiegeEvent on the server
+        siegeEventId = TestEnvironment.CreateRegisteredObject<SiegeEvent>(disabledMethods);
     }
 
     public void Dispose()
@@ -36,47 +42,26 @@ public class SiegeEventLifetimeTests : IDisposable
         TestEnvironment.Dispose();
     }
 
-        [Fact]
-    public void ServerCreateSiegeEvent_SyncAllClients()
+
+    [Fact]
+    public void ServerChangeSiegeEventSiegeStartTime_SyncAllClients()
     {
         // Arrange
-        string? siegeEventId = null;
+        Assert.True(Server.ObjectManager.TryGetObject<SiegeEvent>(siegeEventId, out var serverSiegeEvent));
+        var newValue=Random<CampaignTime>();
 
         // Act
         Server.Call(() =>
         {
-            var siegeEvent = GameObjectCreator.CreateInitializedObject<SiegeEvent>();
-            Assert.True(Server.ObjectManager.TryGetId(siegeEvent, out siegeEventId));
-        }, disabledMethods
-        );
-
-        // Assert
-        Assert.NotNull(siegeEventId);
-
-        foreach (var client in TestEnvironment.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<SiegeEvent>(siegeEventId, out var _));
-        }
-    }
-
-    [Fact]
-    public void ClientCreateSiegeEvent_DoesNothing()
-    {
-        // Arrange
-        string? clientSiegeEventId = null;
-
-        // Act
-        var firstClient = TestEnvironment.Clients.First();
-        firstClient.Call(() =>
-        {
-            var SiegeEvent = ObjectHelper.SkipConstructor<SiegeEvent>();
-
-            Assert.False(firstClient.ObjectManager.TryGetId(SiegeEvent, out clientSiegeEventId));
+            serverSiegeEvent.SiegeStartTime = newValue;
         });
 
         // Assert
-        Assert.Null(clientSiegeEventId);
+        foreach (var client in TestEnvironment.Clients)
+        {
+            Assert.True(client.ObjectManager.TryGetObject<SiegeEvent>(siegeEventId, out var clientSiegeEvent));
+            Assert.Equal(serverSiegeEvent.SiegeStartTime, clientSiegeEvent.SiegeStartTime);
+        }
     }
-}
-
     
+}

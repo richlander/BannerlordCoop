@@ -1,25 +1,27 @@
 ﻿using Common.Logging;
 using Common.Messaging;
 using GameInterface.Policies;
+using GameInterface.Services.BasicCharacterObjects.Messages;
 using GameInterface.Services.CharacterObjects.Messages;
 using HarmonyLib;
 using Serilog;
 using System;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 
 namespace GameInterface.Services.CharacterObjects.Patches
 {
     /// <summary>
-    /// Lifetime Patches for CharacterObjects
+    /// Lifetime Patches for BasicCharacterObjects
     /// </summary>
     [HarmonyPatch]
-    internal class CharacterObjectLifetimePatches
+    internal class BasicCharacterObjectLifetimePatches
     {
-        private static ILogger Logger = LogManager.GetLogger<CharacterObjectLifetimePatches>();
+        private static ILogger Logger = LogManager.GetLogger<BasicCharacterObjectLifetimePatches>();
 
-        [HarmonyPatch(typeof(CharacterObject), MethodType.Constructor)]
+        [HarmonyPatch(typeof(BasicCharacterObject), MethodType.Constructor)]
         [HarmonyPrefix]
-        private static bool CreateCharacterObjectPrefix(ref CharacterObject __instance)
+        private static bool CreateCharacterObjectPrefix(ref BasicCharacterObject __instance)
         {
             // Call original if we call this function
             if (CallOriginalPolicy.IsOriginalAllowed()) return true;
@@ -27,11 +29,11 @@ namespace GameInterface.Services.CharacterObjects.Patches
             if (ModInformation.IsClient)
             {
                 Logger.Error("Client created unmanaged {name}\n"
-                    + "Callstack: {callstack}", typeof(CharacterObject), Environment.StackTrace);
+                    + "Callstack: {callstack}", typeof(BasicCharacterObject), Environment.StackTrace);
                 return false;
             }
 
-            var message = new CharacterObjectCreated(__instance);
+            var message = new BasicCharacterCreated(__instance);
 
             MessageBroker.Instance.Publish(__instance, message);
 

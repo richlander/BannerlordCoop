@@ -1,16 +1,19 @@
 ﻿using GameInterface.Services.Registry;
 using System.Threading;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 using TaleWorlds.ObjectSystem;
 
-namespace GameInterface.Services.CultureObjects
+namespace GameInterface.Services.BasicCultureObjects
 {
-    internal class CultureObjectRegistry : RegistryBase<CultureObject>
+    internal class BasicCultureObjectRegistry : RegistryBase<BasicCultureObject>
     {
-        private const string CultureStringIdPrefix = "CoopCulture";
+        private const string IdPrefix = "CoopBasicCulture";
         private static int InstanceCounter = 0;
 
-        public CultureObjectRegistry(IRegistryCollection collection) : base(collection) { }
+        public BasicCultureObjectRegistry(IRegistryCollection collection) : base(collection)
+        {
+        }
 
         public override void RegisterAll()
         {
@@ -22,16 +25,15 @@ namespace GameInterface.Services.CultureObjects
                 return;
             }
 
-            foreach (var culture in objectManager.GetObjectTypeList<CultureObject>())
+            foreach (var culture in objectManager.GetObjectTypeList<BasicCultureObject>())
             {
                 RegisterExistingObject(culture.StringId, culture);
             }
         }
 
-        protected override string GetNewId(CultureObject culture)
+        protected override string GetNewId(BasicCultureObject obj)
         {
-            culture.StringId = $"{CultureStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
-            return culture.StringId;
+            return $"{IdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
         }
     }
 }
