@@ -26,7 +26,18 @@ public class ContainerProvider
     {
         lifetimeScope = _lifetimeScope;
 
-        return lifetimeScope != null;
+        if (lifetimeScope == null)
+        {
+            var callStack = Environment.StackTrace;
+            Logger.Error("{name} was not setup properly, try using {setupFnName}\n" +
+                "CallStack: {callStack}",
+                nameof(ContainerProvider),
+                nameof(SetContainer),
+                callStack);
+            return false;
+        }
+
+        return true;
     }
 
     public static bool TryResolve<T>(out T instance) where T : class
