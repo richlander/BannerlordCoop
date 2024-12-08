@@ -23,6 +23,7 @@ namespace E2E.Tests.Services.Clans
         private string CharacterObjectId;
         private string HeroId;
         private string CultureId;
+        private string ClanId;
 
         public ClanSyncTests(ITestOutputHelper output)
         {
@@ -41,23 +42,22 @@ namespace E2E.Tests.Services.Clans
             var server = TestEnvironment.Server;
 
             // Act
-            string? clanId = null;
             server.Call(() =>
             {
+                var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
                 var kingdom = GameObjectCreator.CreateInitializedObject<Kingdom>();
                 var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-                var characterObject = GameObjectCreator.CreateInitializedObject<CharacterObject>();
                 var hero = GameObjectCreator.CreateInitializedObject<Hero>();
                 var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
+                var clan = GameObjectCreator.CreateInitializedObject<Clan>();
 
-                server.ObjectManager.TryGetId(kingdom, out KingdomId);
-                server.ObjectManager.TryGetId(settlement, out SettlementId);
-                server.ObjectManager.TryGetId(characterObject, out CharacterObjectId);
-                server.ObjectManager.TryGetId(hero, out HeroId);
-                server.ObjectManager.TryGetId(culture, out CultureId);
+                Assert.True(server.ObjectManager.TryGetId(kingdom, out KingdomId));
+                Assert.True(server.ObjectManager.TryGetId(settlement, out SettlementId));
+                Assert.True(server.ObjectManager.TryGetId(characterObject, out CharacterObjectId));
+                Assert.True(server.ObjectManager.TryGetId(hero, out HeroId));
+                Assert.True(server.ObjectManager.TryGetId(culture, out CultureId));
+                Assert.True(server.ObjectManager.TryGetId(clan, out ClanId));
 
-                var clan = Clan.CreateClan("");
-                clanId = clan.StringId;
                 clan.Name = new TextObject("testName");
                 clan.InformalName = new TextObject("testInformal");
                 clan.LastFactionChangeTime = new CampaignTime(100);
@@ -77,9 +77,7 @@ namespace E2E.Tests.Services.Clans
                 clan._midPointCalculated = true;
                 clan.Renown = 55f;
                 clan.NotAttackableByPlayerUntilTime = new CampaignTime(300);
-
-                Assert.True(server.ObjectManager.TryGetObject<CultureObject>(CultureId, out var cultureObject));
-                clan.Culture = cultureObject;
+                clan.Culture = culture;
             });
 
             var isEliminatedField = AccessTools.Field(typeof(Clan), nameof(Clan._isEliminated));
@@ -110,7 +108,7 @@ namespace E2E.Tests.Services.Clans
             var clanDebtToKingdomIntercept = TestEnvironment.GetIntercept(clanDebtToKingdomField);
 
             // Assert
-            Assert.True(server.ObjectManager.TryGetObject(clanId, out Clan serverClan));
+            Assert.True(server.ObjectManager.TryGetObject(ClanId, out Clan serverClan));
 
             server.Call(() =>
             {
@@ -136,7 +134,7 @@ namespace E2E.Tests.Services.Clans
 
             foreach (var client in TestEnvironment.Clients)
             {
-                Assert.True(client.ObjectManager.TryGetObject(clanId, out Clan clientClan));
+                Assert.True(client.ObjectManager.TryGetObject(ClanId, out Clan clientClan));
                 Assert.Equal(serverClan.Name.Value, clientClan.Name.Value);
                 Assert.Equal(serverClan.InformalName.Value, clientClan.InformalName.Value);
                 Assert.Equal(serverClan.Culture.StringId, clientClan.Culture.StringId);

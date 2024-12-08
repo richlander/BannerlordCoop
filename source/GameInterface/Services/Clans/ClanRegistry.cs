@@ -11,7 +11,7 @@ namespace GameInterface.Services.Clans;
 internal class ClanRegistry : RegistryBase<Clan>
 {
     private const string ClanStringIdPrefix = "CoopClan";
-    private int InstanceCounter = 0;
+    private static int InstanceCounter = 0;
 
     public ClanRegistry(IRegistryCollection collection) : base(collection) { }
 
