@@ -28,12 +28,12 @@ public class ContainerProvider
 
         if (lifetimeScope == null)
         {
-            var callStack = Environment.StackTrace;
-            Logger.Error("{name} was not setup properly, try using {setupFnName}\n" +
-                "CallStack: {callStack}",
-                nameof(ContainerProvider),
-                nameof(SetContainer),
-                callStack);
+            //var callStack = Environment.StackTrace;
+            //Logger.Error("{name} was not setup properly, try using {setupFnName}\n" +
+            //    "CallStack: {callStack}",
+            //    nameof(ContainerProvider),
+            //    nameof(SetContainer),
+            //    callStack);
             return false;
         }
 

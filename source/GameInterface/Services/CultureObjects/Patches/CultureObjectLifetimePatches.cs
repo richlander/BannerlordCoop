@@ -41,31 +41,31 @@ namespace GameInterface.Services.CultureObjects.Patches
         }
     }
 
-    [HarmonyPatch]
-    internal class MBObjectManagerLifetimePatches
-    {
-        private static ILogger Logger = LogManager.GetLogger<MBObjectManagerLifetimePatches>();
+    //[HarmonyPatch]
+    //internal class MBObjectManagerLifetimePatches
+    //{
+    //    private static ILogger Logger = LogManager.GetLogger<MBObjectManagerLifetimePatches>();
 
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            yield return AccessTools.Method(typeof(MBObjectManager), nameof(MBObjectManager.CreateObject), new Type[] { typeof(string) }).MakeGenericMethod(typeof(CultureObject));
-        }
+    //    private static IEnumerable<MethodBase> TargetMethods()
+    //    {
+    //        yield return AccessTools.Method(typeof(MBObjectManager), nameof(MBObjectManager.CreateObject), new Type[] { typeof(string) }).MakeGenericMethod(typeof(CultureObject));
+    //    }
 
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> CreateFromTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            foreach (var instr in instructions)
-            {
-                if (instr.Calls(AccessTools.PropertySetter(typeof(MBObjectBase), nameof(MBObjectBase.StringId))))
-                {
-                    yield return new CodeInstruction(OpCodes.Pop);
-                    yield return new CodeInstruction(OpCodes.Pop);
-                }
-                else
-                {
-                    yield return instr;
-                }
-            }
-        }
-    }
+    //    [HarmonyTranspiler]
+    //    private static IEnumerable<CodeInstruction> CreateFromTranspiler(IEnumerable<CodeInstruction> instructions)
+    //    {
+    //        foreach (var instr in instructions)
+    //        {
+    //            if (instr.Calls(AccessTools.PropertySetter(typeof(MBObjectBase), nameof(MBObjectBase.StringId))))
+    //            {
+    //                yield return new CodeInstruction(OpCodes.Pop);
+    //                yield return new CodeInstruction(OpCodes.Pop);
+    //            }
+    //            else
+    //            {
+    //                yield return instr;
+    //            }
+    //        }
+    //    }
+    //}
 }
