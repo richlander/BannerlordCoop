@@ -9,10 +9,7 @@ using TaleWorlds.CampaignSystem.Siege;
 using System.Xml.Linq;
 using TaleWorlds.ObjectSystem;
 
-
-
 namespace E2E.Tests.Services.Equipments;
-
 
 public class EquipmentCollectionTests : IDisposable
 {
@@ -29,8 +26,6 @@ public class EquipmentCollectionTests : IDisposable
     {
         TestEnvironment.Dispose();
     }
-
-    // TODO create tests similar to Sync BesiegerCamp #977 or Item roster synchronization #701
 
     [Fact]
     public void ServerUpdateEquipmentCollection_SyncAllClients()
@@ -56,12 +51,9 @@ public class EquipmentCollectionTests : IDisposable
 
         foreach (var client in TestEnvironment.Clients)
         {
-
             Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var clientEquipment));
             Assert.Equal(element.Item, clientEquipment._itemSlots[0].Item);
-
         }
-
     }
 
     [Fact]
@@ -93,7 +85,6 @@ public class EquipmentCollectionTests : IDisposable
             Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var clientEquipment));
             Assert.True(server.ObjectManager.TryGetObject<ItemObject>(ItemObjectId, out var clientItemObject));
             EquipmentCollectionPatches.ArrayAssignIntercept(clientEquipment._itemSlots, 0, element, clientEquipment);
-            
         });
 
         // Assert
@@ -103,5 +94,4 @@ public class EquipmentCollectionTests : IDisposable
             Assert.NotEqual(element.Item, clientEquipment._itemSlots[0].Item);
         }
     }
-
 }
