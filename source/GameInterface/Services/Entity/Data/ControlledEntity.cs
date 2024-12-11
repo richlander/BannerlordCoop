@@ -1,6 +1,6 @@
 ﻿using Common.Logging;
+using ProtoBuf;
 using Serilog;
-using System;
 using TaleWorlds.ObjectSystem;
 
 namespace GameInterface.Services.Entity.Data;
@@ -8,6 +8,7 @@ namespace GameInterface.Services.Entity.Data;
 /// <summary>
 /// Controllable entity and owner
 /// </summary>
+[ProtoContract(SkipConstructor = true)]
 public class ControlledEntity
 {
     private static readonly ILogger Logger = LogManager.GetLogger<ControlledEntity>();
@@ -16,6 +17,7 @@ public class ControlledEntity
     /// Id of owner of the controlled entity.
     /// This can be either a client or server.
     /// </summary>
+    [ProtoMember(1)]
     public string OwnerId { get; }
 
     /// <summary>
@@ -24,6 +26,7 @@ public class ControlledEntity
     /// <remarks>
     /// This will normally be the StringId from the <see cref="MBObjectBase"/> class
     /// </remarks>
+    [ProtoMember(2)]
     public string EntityId { get; }
 
     public ControlledEntity(string ownerId, string entityId)
@@ -50,5 +53,21 @@ public class ControlledEntity
         return OwnerId == controlledEntity.OwnerId && EntityId == controlledEntity.EntityId;
     }
 
-    public override int GetHashCode() => base.GetHashCode();
+    public static bool operator ==(ControlledEntity obj1, ControlledEntity obj2)
+    {
+        return obj1.Equals(obj2);
+    }
+
+    public static bool operator !=(ControlledEntity obj1, ControlledEntity obj2)
+    {
+        return !obj1.Equals(obj2);
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = 552523;
+        hash = hash * 31 + OwnerId.GetHashCode();
+        hash = hash * 31 + EntityId.GetHashCode();
+        return hash;
+    }
 }
