@@ -8,14 +8,10 @@ namespace GameInterface.Services.Equipments.Data
     {
         [ProtoMember(1)]
         public string EquipmentId { get; }
-        [ProtoMember(2)]
-        public string EquipmentPropertyId { get; }
 
-
-        public EquipmentCreatedData(string equipmentId, string equipmentPropertyId = null)
+        public EquipmentCreatedData(string equipmentId)
         {
             EquipmentId = equipmentId;
-            EquipmentPropertyId = equipmentPropertyId;
         }
     }
 }
