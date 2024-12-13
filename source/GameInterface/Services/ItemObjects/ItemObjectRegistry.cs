@@ -20,7 +20,7 @@ namespace GameInterface.Services.ItemObjects
         {
             foreach (ItemObject item in Campaign.Current.AllItems)
             {
-                if (RegisterNewObject(item, out var _) == false)
+                if (RegisterExistingObject(item.StringId, item) == false)
                 {
                     Logger.Error($"Unable to register {item}");
                 }
