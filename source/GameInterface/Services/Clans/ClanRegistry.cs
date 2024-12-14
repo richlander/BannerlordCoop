@@ -33,7 +33,8 @@ internal class ClanRegistry : RegistryBase<Clan>
 
     protected override string GetNewId(Clan party)
     {
-        return $"{ClanStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
+        party.StringId = $"{ClanStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
+        return party.StringId;
     }
 
 }

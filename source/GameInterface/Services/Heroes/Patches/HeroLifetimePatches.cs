@@ -32,7 +32,7 @@ internal class HeroLifetimePatches
         {
             Logger.Error("Client created unmanaged {name}\n"
                 + "Callstack: {callstack}", typeof(Hero), Environment.StackTrace);
-            return true;
+            return false;
         }
 
         // Allow method if container is not setup
