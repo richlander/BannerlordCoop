@@ -1,28 +1,26 @@
 ﻿using Common.Logging;
 using Common.Messaging;
 using GameInterface.Policies;
-using GameInterface.Services.ItemObjects.Messages;
+using GameInterface.Services.Monsters.Messages;
 using HarmonyLib;
 using Serilog;
 using System;
 using TaleWorlds.Core;
 
-namespace GameInterface.Services.ItemObjects.Patches
+namespace GameInterface.Services.Monsters.Patches
 {
     /// <summary>
-    /// Lifetime Patches for ItemObjects
+    /// Lifetime Patches for Monsters
     /// </summary>
 
-    //Registry crashes it, no need for lifetime without it
-
     [HarmonyPatch]
-    internal class ItemObjectLifetimePatches
+    internal class MonsterLifetimePatches
     {
-        private static ILogger Logger = LogManager.GetLogger<ItemObjectLifetimePatches>();
+        private static ILogger Logger = LogManager.GetLogger<MonsterLifetimePatches>();
 
-        [HarmonyPatch(typeof(ItemObject), MethodType.Constructor)]
+        [HarmonyPatch(typeof(Monster), MethodType.Constructor)]
         [HarmonyPrefix]
-        private static bool CreateBuildingPrefix(ref ItemObject __instance)
+        private static bool CreateMonsterPrefix(ref Monster __instance)
         {
             // Call original if we call this function
             if (CallOriginalPolicy.IsOriginalAllowed()) return true;
@@ -30,11 +28,11 @@ namespace GameInterface.Services.ItemObjects.Patches
             if (ModInformation.IsClient)
             {
                 Logger.Error("Client created unmanaged {name}\n"
-                    + "Callstack: {callstack}", typeof(ItemObject), Environment.StackTrace);
+                    + "Callstack: {callstack}", typeof(Monster), Environment.StackTrace);
                 return false;
             }
 
-            var message = new ItemObjectCreated(__instance);
+            var message = new MonsterCreated(__instance);
 
             MessageBroker.Instance.Publish(__instance, message);
 
