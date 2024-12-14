@@ -6,6 +6,9 @@ using TaleWorlds.Core;
 
 namespace GameInterface.Services.ItemObjects
 {
+    //This crashes
+
+
     internal class ItemObjectRegistry : RegistryBase<ItemObject>
     {
         private const string ItemObjectIdPrefix = "CoopItemObject";
@@ -15,9 +18,9 @@ namespace GameInterface.Services.ItemObjects
 
         public override void RegisterAll()
         {
-            foreach(ItemObject item in Campaign.Current.AllItems)
+            foreach (ItemObject item in Campaign.Current.AllItems)
             {
-                if (RegisterNewObject(item, out var _) == false)
+                if (RegisterExistingObject(item.StringId, item) == false)
                 {
                     Logger.Error($"Unable to register {item}");
                 }

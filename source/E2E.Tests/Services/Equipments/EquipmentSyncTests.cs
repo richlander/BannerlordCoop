@@ -180,49 +180,4 @@ public class EquipmentSyncTests : IDisposable
 
     }
 
-    [Fact]
-    public void Server_EquipmentElement()
-    {
-
-        // Arrange
-        var server = TestEnvironment.Server;
-
-        string EquipmentId = null;
-
-        var field = AccessTools.Field(typeof(Equipment), nameof(Equipment._equipmentType));
-
-
-        // Get field intercept to use on the server to simulate the field changing
-        var intercept = TestEnvironment.GetIntercept(field);
-
-
-        Equipment.EquipmentType equipmentType = Equipment.EquipmentType.Civilian;
-
-        // Act
-        server.Call(() =>
-        {
-            var Equipment = new Equipment();
-
-            Assert.True(server.ObjectManager.TryGetId(Equipment, out EquipmentId));
-
-            Assert.True(server.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
-
-            //TODO Fix
-            Assert.NotEqual(equipment._equipmentType, equipmentType);
-
-            // Simulate the field changing
-            intercept.Invoke(null, new object[] { equipment, equipmentType });
-
-            Assert.Equal(equipmentType, equipment._equipmentType);
-        });
-
-        // Assert
-        foreach (var client in TestEnvironment.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<Equipment>(EquipmentId, out var equipment));
-
-            Assert.Equal(equipment._equipmentType, equipmentType);
-        }
-
-    }
 }

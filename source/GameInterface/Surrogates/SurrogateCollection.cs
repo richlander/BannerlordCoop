@@ -1,5 +1,4 @@
 ﻿using ProtoBuf.Meta;
-using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -13,21 +12,22 @@ internal class SurrogateCollection : ISurrogateCollection
 {
     public SurrogateCollection()
     {
-        AddSurrogate<Vec2, Vec2Surrogate>();
-        AddSurrogate<CampaignTime, CampaignTimeSurrogate>();
-        AddSurrogate<TextObject, TextObjectSurrogate>();
-        
-        AddSurrogate<ItemModifierGroup, ItemModifierGroupSurrogate>();
-        AddSurrogate<ItemModifier, ItemModifierSurrogate>();
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(Vec2)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<Vec2, Vec2Surrogate>();
 
-        AddSurrogate<Banner, BannerSurrogate>();
-    }
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(TextObject)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<TextObject, TextObjectSurrogate>();
 
-    private void AddSurrogate<T, TSurrogate>()
-    {
-        if (RuntimeTypeModel.Default.CanSerialize(typeof(T)) == false)
-        {
-            RuntimeTypeModel.Default.SetSurrogate<T, TSurrogate>();
-        }
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(ItemModifier)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<ItemModifier, ItemModifierSurrogate>();
+
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(ItemModifierGroup)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<ItemModifierGroup, ItemModifierGroupSurrogate>();
+
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(CampaignTime)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<CampaignTime, CampaignTimeSurrogate>();
+            
+        if (RuntimeTypeModel.Default.CanSerialize(typeof(Banner)) == false)
+            RuntimeTypeModel.Default.SetSurrogate<Banner, BannerSurrogate>();
     }
 }

@@ -35,11 +35,7 @@ namespace GameInterface.Services.Equipments.Handlers
             this.objectManager = objectManager;
             this.network = network;
             messageBroker.Subscribe<EquipmentCreated>(Handle);
-            messageBroker.Subscribe<EquipmentWithParamCreated>(Handle);
-
             messageBroker.Subscribe<NetworkCreateEquipment>(Handle);
-            messageBroker.Subscribe<NetworkCreateEquipmentWithParam>(Handle);
-
             messageBroker.Subscribe<EquipmentRemoved>(Handle);
             messageBroker.Subscribe<NetworkRemoveEquipment>(Handle);
         }
@@ -48,8 +44,6 @@ namespace GameInterface.Services.Equipments.Handlers
         {
             messageBroker.Unsubscribe<EquipmentCreated>(Handle);
             messageBroker.Unsubscribe<NetworkCreateEquipment>(Handle);
-            messageBroker.Unsubscribe<EquipmentWithParamCreated>(Handle);
-            messageBroker.Unsubscribe<NetworkCreateEquipmentWithParam>(Handle);
             messageBroker.Unsubscribe<EquipmentRemoved>(Handle);
             messageBroker.Unsubscribe<NetworkRemoveEquipment>(Handle);
         }
@@ -75,50 +69,19 @@ namespace GameInterface.Services.Equipments.Handlers
 
         }
 
-        private void Handle(MessagePayload<EquipmentWithParamCreated> payload) {
-            string ParamId = null;
-            if (objectManager.TryGetId(payload.What.Param, out ParamId) == false)
-            {
-                Logger.Error("Equipment param not found in object manager");
-                return;
-            }
-            if (objectManager.AddNewObject(payload.What.Data, out string newEquipmentId) == false)
-            {
-                Logger.Error("Create new equipment object failed");
-                return;
-            }
-            NetworkCreateEquipmentWithParam message = new(new EquipmentCreatedData(newEquipmentId, ParamId));
-            network.SendAll(message);
-        }
-
-
         private void Handle(MessagePayload<NetworkCreateEquipment> obj)
         {
             var payload = obj.What.Data;
 
+            Equipment newEquipment = ObjectHelper.SkipConstructor<Equipment>();
             GameLoopRunner.RunOnMainThread(() =>
             {
-                using (new AllowedThread())
-                {
-                    var newEquipment =  new Equipment();
-                    objectManager.AddExisting(payload.EquipmentId, newEquipment);
-                }
-            });
-        }
-        private void Handle(MessagePayload<NetworkCreateEquipmentWithParam> obj)
-        {
-            var payload = obj.What.Data;
-
-            objectManager.TryGetObject<Equipment>(payload.EquipmentPropertyId, out var propertyEquipment);
-
-            GameLoopRunner.RunOnMainThread(() =>
-            {
-                using (new AllowedThread())
-                {
-                    var newEquipment = new Equipment(propertyEquipment);
-                    
-                    objectManager.AddExisting(payload.EquipmentId, newEquipment);
-                }
+                  using (new AllowedThread())
+                  {
+                      Equipment_ctor.Invoke(newEquipment, Array.Empty<object>());
+                  }
+                  objectManager.AddExisting(payload.EquipmentId, newEquipment);
+               
             });
         }
 
