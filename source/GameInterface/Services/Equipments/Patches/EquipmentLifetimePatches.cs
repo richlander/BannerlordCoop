@@ -60,7 +60,7 @@ internal class EquipmentLifetimePatches
             return true;
         }
 
-            MessageBroker.Instance.Publish(__instance, new EquipmentWithParamCreated(__instance, equipment));
+            MessageBroker.Instance.Publish(__instance, new EquipmentCreated(__instance));
 
         return true;
     }

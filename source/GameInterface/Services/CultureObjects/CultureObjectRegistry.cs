@@ -30,7 +30,8 @@ namespace GameInterface.Services.CultureObjects
 
         protected override string GetNewId(CultureObject culture)
         {
-            return $"{CultureStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
+            culture.StringId = $"{CultureStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
+            return culture.StringId;
         }
     }
 }

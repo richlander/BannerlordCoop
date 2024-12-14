@@ -28,7 +28,7 @@ namespace GameInterface.Services.CharacterObjects.Patches
             {
                 Logger.Error("Client created unmanaged {name}\n"
                     + "Callstack: {callstack}", typeof(CharacterObject), Environment.StackTrace);
-                return true;
+                return false;
             }
 
             var message = new CharacterObjectCreated(__instance);
