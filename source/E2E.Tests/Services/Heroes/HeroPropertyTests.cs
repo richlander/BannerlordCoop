@@ -25,6 +25,13 @@ namespace E2E.Tests.Services.Heroes
         IEnumerable<EnvironmentInstance> Clients => TestEnvironment.Clients;
 
         private string HeroId;
+        private string OtherHeroId;
+        private string ClanId;
+        private string SettlementId;
+        private string TownId;
+        private string MobilePartyId;
+        private string CivEquipmentId;
+        private string BattleEquipmentId;
 
         StaticBodyProperties body = new StaticBodyProperties(1, 2, 1, 2, 1, 3, 1, 2);
         float newFloat = 5f;
@@ -64,11 +71,9 @@ namespace E2E.Tests.Services.Heroes
                 Town newTown = GameObjectCreator.CreateInitializedObject<Town>();
                 MobileParty newMobileParty = GameObjectCreator.CreateInitializedObject<MobileParty>();
 
-                Equipment newBattleEquipment = new Equipment(false);
-                Equipment newCivEquipment = new Equipment(true);
+                Equipment newBattleEquipment = GameObjectCreator.CreateInitializedObject<Equipment>();
+                Equipment newCivEquipment = GameObjectCreator.CreateInitializedObject<Equipment>();
                 BettingFraudIssue newIssue = new BettingFraudIssue(hero);
-
-
 
                 hero.StaticBodyProperties = body;
                 hero.Weight = newFloat;
@@ -82,13 +87,11 @@ namespace E2E.Tests.Services.Heroes
                 hero.PreferredUpgradeFormation = newFormation;
                 hero.HeroState = newCharState;
                 hero.IsMinorFactionHero = true;
-                hero.Issue = newIssue;
                 hero.CompanionOf = newClan;
                 hero.Occupation = newOccupation;
                 hero.DeathMark = newKillAction;
                 hero.DeathMarkKillerHero = newHero;
                 hero.LastKnownClosestSettlement = newSettlement;
-                hero.HitPoints = newInt;
                 hero.DeathDay = newCampaignTime;
                 hero.LastExaminedLogEntryID = newLong;
                 hero.Clan = newClan;
@@ -103,7 +106,6 @@ namespace E2E.Tests.Services.Heroes
                 hero.BornSettlement = newSettlement;
                 hero.Gold = newInt;
                 hero.RandomValue = newInt;
-                hero.BannerItem = newEquipmentElement;
                 hero.Father = newHero;
                 hero.Mother = newHero;
                 hero.Spouse = newHero;
@@ -111,13 +113,60 @@ namespace E2E.Tests.Services.Heroes
                 Assert.Equal(body, hero.StaticBodyProperties);
 
                 Assert.True(server.ObjectManager.TryGetId(hero, out HeroId));
+                Assert.True(server.ObjectManager.TryGetId(newHero, out OtherHeroId));
+                Assert.True(server.ObjectManager.TryGetId(newSettlement, out SettlementId));
+                Assert.True(server.ObjectManager.TryGetId(newClan, out ClanId));
+                Assert.True(server.ObjectManager.TryGetId(newTown, out TownId));
+                Assert.True(server.ObjectManager.TryGetId(newMobileParty, out MobilePartyId));
+                Assert.True(server.ObjectManager.TryGetId(newCivEquipment, out CivEquipmentId));
+                Assert.True(server.ObjectManager.TryGetId(newBattleEquipment, out BattleEquipmentId));
             });
 
             foreach (var client in Clients)
             {
                 Assert.True(client.ObjectManager.TryGetObject<Hero>(HeroId, out var clientHero));
+                Assert.True(client.ObjectManager.TryGetObject<Hero>(OtherHeroId, out var clientOtherHero));
+                Assert.True(client.ObjectManager.TryGetObject<Settlement>(SettlementId, out var clientSettlement));
+                Assert.True(client.ObjectManager.TryGetObject<Clan>(ClanId, out var clientClan));
+                Assert.True(client.ObjectManager.TryGetObject<Town>(TownId, out var clientTown));
+                Assert.True(client.ObjectManager.TryGetObject<MobileParty>(MobilePartyId, out var clientMobileParty));
+                Assert.True(client.ObjectManager.TryGetObject<Equipment>(CivEquipmentId, out var clientCivEquipment));
+                Assert.True(client.ObjectManager.TryGetObject<Equipment>(BattleEquipmentId, out var clientBattleEquipment));
 
+                Assert.Equal(clientCivEquipment, clientHero._civilianEquipment);
+                Assert.Equal(clientBattleEquipment, clientHero._battleEquipment);
+                Assert.Equal(clientClan, clientHero.Clan);
+                Assert.Equal(clientOtherHero, clientHero.DeathMarkKillerHero);
+                Assert.Equal(clientSettlement, clientHero.LastKnownClosestSettlement);
+                Assert.Equal(clientClan, clientHero.CompanionOf);
+                Assert.Equal(clientClan, clientHero.SupporterOf);
+                Assert.Equal(clientTown, clientHero.GovernorOf);
+                Assert.Equal(clientMobileParty, clientHero.PartyBelongedTo);
+                Assert.Equal(clientMobileParty.Party, clientHero.PartyBelongedToAsPrisoner);
+                Assert.Equal(clientSettlement, clientHero.StayingInSettlement);
+                Assert.Equal(clientSettlement, clientHero.BornSettlement);
+                Assert.Equal(clientOtherHero, clientHero.Mother);
+                Assert.Equal(clientOtherHero, clientHero.Father);
+                Assert.Equal(clientOtherHero, clientHero.Spouse);
                 Assert.Equal(body, clientHero.StaticBodyProperties);
+                Assert.Equal(newFloat, clientHero.Weight);
+                Assert.Equal(newFloat, clientHero.Build);
+                Assert.Equal(newFloat, clientHero.PassedTimeAtHomeSettlement);
+                Assert.Equal(newText.Value, clientHero.EncyclopediaText.Value);
+                Assert.True(clientHero.IsFemale);
+                Assert.Equal(newCampaignTime, clientHero.CaptivityStartTime);
+                Assert.Equal(newFormation, clientHero.PreferredUpgradeFormation);
+                Assert.Equal(newCharState, clientHero.HeroState);
+                Assert.True(clientHero.IsMinorFactionHero);
+                Assert.Equal(newOccupation, clientHero.Occupation);
+                Assert.Equal(newKillAction, clientHero.DeathMark);
+                Assert.Equal(newCampaignTime, clientHero.DeathDay);
+                Assert.Equal(newLong, clientHero.LastExaminedLogEntryID);
+                Assert.True(clientHero.IsKnownToPlayer);
+                Assert.True(clientHero.HasMet);
+                Assert.Equal(newCampaignTime, clientHero.LastMeetingTimeWithPlayer);
+                Assert.Equal(newInt, clientHero.Gold);
+                Assert.Equal(newInt, clientHero.RandomValue);
             }
         }
     }
