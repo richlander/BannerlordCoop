@@ -26,7 +26,7 @@ internal class SurrogateCollection : ISurrogateCollection
 
         if (RuntimeTypeModel.Default.CanSerialize(typeof(CampaignTime)) == false)
             RuntimeTypeModel.Default.SetSurrogate<CampaignTime, CampaignTimeSurrogate>();
-
+            
         if (RuntimeTypeModel.Default.CanSerialize(typeof(Banner)) == false)
             RuntimeTypeModel.Default.SetSurrogate<Banner, BannerSurrogate>();
     }

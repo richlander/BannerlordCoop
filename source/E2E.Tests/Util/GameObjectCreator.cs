@@ -43,6 +43,7 @@ internal class GameObjectCreator
         { typeof(ItemRoster), new ItemRosterBuilder() },
         { typeof(Building), new BuildingBuilder() },
         { typeof(ItemCategory), new ItemCategoryBuilder() },
+        { typeof(TroopRoster), new TroopRosterBuilder() },
         { typeof(EquipmentElement), new EquipmentElementBuilder() },
         { typeof(ItemObject), new ItemObjectBuilder() },
         { typeof(Equipment), new EquipmentBuilder() }
