@@ -26,7 +26,7 @@ namespace GameInterface.Services.CultureObjects.Patches
                 Logger.Error("Client created unmanaged {name}\n"
                     + "Callstack: {callstack}", typeof(CultureObject), Environment.StackTrace);
 
-                return false;
+                return true;
             }
 
             var message = new CultureObjectCreated(__instance);
