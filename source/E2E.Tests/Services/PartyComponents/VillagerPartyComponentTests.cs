@@ -7,10 +7,10 @@ using TaleWorlds.CampaignSystem.Settlements;
 using Xunit.Abstractions;
 
 namespace E2E.Tests.Services.PartyComponents;
-public class GarrisonPartyComponentTests : IDisposable
+public class VillagerPartyComponentTests : IDisposable
 {
     E2ETestEnvironment TestEnvironment { get; }
-    public GarrisonPartyComponentTests(ITestOutputHelper output)
+    public VillagerPartyComponentTests(ITestOutputHelper output)
     {
         TestEnvironment = new E2ETestEnvironment(output);
     }
@@ -28,20 +28,19 @@ public class GarrisonPartyComponentTests : IDisposable
 
         // Act
         string? partyId = null;
-        string? settlementId = null;
+        string? villageId = null;
 
         server.Call(() =>
         {
-            var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-            settlement.Town = GameObjectCreator.CreateInitializedObject<Town>();
+            var village = GameObjectCreator.CreateInitializedObject<Village>();
 
-            var newSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+            var newVillage = GameObjectCreator.CreateInitializedObject<Village>();
 
-            var newParty = GarrisonPartyComponent.CreateGarrisonParty("TestId", settlement, true);
-            GarrisonPartyComponent garrison = (GarrisonPartyComponent)newParty.PartyComponent;
-            garrison.Settlement = newSettlement;
+            var newParty = VillagerPartyComponent.CreateVillagerParty("TestId", village, 5);
+            VillagerPartyComponent villagers = (VillagerPartyComponent)newParty.PartyComponent;
+            villagers.Village = newVillage;
 
-            Assert.True(server.ObjectManager.TryGetId(newSettlement, out settlementId));
+            Assert.True(server.ObjectManager.TryGetId(newVillage, out villageId));
 
             partyId = newParty.StringId;
         });
@@ -53,10 +52,10 @@ public class GarrisonPartyComponentTests : IDisposable
         foreach (var client in TestEnvironment.Clients)
         {
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var newParty));
-            Assert.IsType<GarrisonPartyComponent>(newParty.PartyComponent);
-            GarrisonPartyComponent garrison = (GarrisonPartyComponent)newParty.PartyComponent;
+            Assert.IsType<VillagerPartyComponent>(newParty.PartyComponent);
+            VillagerPartyComponent villagers = (VillagerPartyComponent)newParty.PartyComponent;
 
-            Assert.Equal(settlementId, garrison.Settlement.StringId);
+            Assert.Equal(villageId, villagers.Village.StringId);
         }
     }
 
@@ -67,14 +66,13 @@ public class GarrisonPartyComponentTests : IDisposable
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
 
-        var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-        settlement.Town = GameObjectCreator.CreateInitializedObject<Town>();
+        var village = GameObjectCreator.CreateInitializedObject<Village>();
 
         // Act
         PartyComponent? partyComponent = null;
         client1.Call(() =>
         {
-            partyComponent = new GarrisonPartyComponent(settlement);
+            partyComponent = new VillagerPartyComponent(village);
         });
 
         Assert.NotNull(partyComponent);

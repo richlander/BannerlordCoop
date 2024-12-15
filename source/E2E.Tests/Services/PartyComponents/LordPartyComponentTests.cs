@@ -1,6 +1,6 @@
 ﻿using E2E.Tests.Environment;
 using E2E.Tests.Util;
-using GameInterface.Services.ObjectManager;
+using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Party.PartyComponents;
@@ -28,30 +28,42 @@ public class LordPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
+        var leaderField = AccessTools.Field(typeof(LordPartyComponent), nameof(LordPartyComponent._leader));
+        var wageLimitField = AccessTools.Field(typeof(LordPartyComponent), nameof(LordPartyComponent._wagePaymentLimit));
+
+        var leaderIntercept = TestEnvironment.GetIntercept(leaderField);
+        var wageLimitIntercept = TestEnvironment.GetIntercept(wageLimitField);
 
         // Act
         string? partyId = null;
-        Hero leaderHero = null;
-
+        Hero leaderhero = null;
+        Hero newLeaderHero = null;
 
         server.Call(() =>
         {
-            leaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
+            leaderhero = GameObjectCreator.CreateInitializedObject<Hero>();
+            newLeaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
 
-            leaderHero.Clan = GameObjectCreator.CreateInitializedObject<Clan>();
+            leaderhero.Clan = GameObjectCreator.CreateInitializedObject<Clan>();
             var spawnSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-            var newParty = LordPartyComponent.CreateLordParty(null, leaderHero, new Vec2(5, 5), 5, spawnSettlement, leaderHero);
+            var newParty = LordPartyComponent.CreateLordParty(null, leaderhero, new Vec2(5, 5), 5, spawnSettlement, leaderhero);
             partyId = newParty.StringId;
-        });
 
+            leaderIntercept.Invoke(null, new object[] { newParty.LordPartyComponent, newLeaderHero });
+            wageLimitIntercept.Invoke(null, new object[] { newParty.LordPartyComponent, 5 });
+        });
 
         // Assert
         Assert.NotNull(partyId);
 
         foreach (var client in TestEnvironment.Clients)
         {
+            Assert.NotNull(newLeaderHero);
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var newParty));
             Assert.IsType<LordPartyComponent>(newParty.PartyComponent);
+
+            Assert.Equal(newLeaderHero.StringId, newParty.LordPartyComponent._leader.StringId);
+            Assert.Equal(5, newParty.LordPartyComponent._wagePaymentLimit);
         }
     }
 
