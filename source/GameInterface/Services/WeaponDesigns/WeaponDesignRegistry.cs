@@ -11,7 +11,7 @@ namespace GameInterface.Services.ItemObjects
     internal class WeaponDesignRegistry : RegistryBase<WeaponDesign>
     {
         private const string ItemObjectIdPrefix = "CoopWeaponDesign";
-        private int InstanceCounter = 0;
+        private static int InstanceCounter = 0;
 
         public WeaponDesignRegistry(IRegistryCollection collection) : base(collection) { }
 

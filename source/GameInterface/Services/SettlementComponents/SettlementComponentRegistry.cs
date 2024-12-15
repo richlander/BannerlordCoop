@@ -8,7 +8,7 @@ namespace GameInterface.Services.SettlementComponents;
 internal class SettlementComponentRegistry : RegistryBase<SettlementComponent>
 {
     private const string SettlementComponentIdPrefix = "CoopSettlementComponent";
-    private int InstanceCounter = 0;
+    private static int InstanceCounter = 0;
 
     public override IEnumerable<Type> ManagedTypes { get; } = new Type[]
     {

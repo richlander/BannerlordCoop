@@ -33,8 +33,8 @@ public class GameInstance
                 Module = (Module)AccessTools.Constructor(typeof(Module)).Invoke(null);
                 GameManager = new SandBoxGameManager();
                 Campaign = new Campaign(CampaignGameMode.Campaign);
-                Game = Game.CreateGame(Campaign, GameManager);
                 MBObjectManager = MBObjectManager.Instance;
+                Game = Game.CreateGame(Campaign, GameManager);
 
 
                 RegisterType<ItemObject>(MBObjectManager);
@@ -72,6 +72,6 @@ public class GameInstance
         MBObjectManager.Instance = MBObjectManager;
         Campaign.Current = Campaign;
         Game.Current = Game;
-        Module.CurrentModule = Module;
+        AccessTools.Property(typeof(Module), nameof(Module.CurrentModule)).SetValue(null, Module);
     }
 }

@@ -24,10 +24,17 @@ internal class MobilePartyRegistry : RegistryBase<MobileParty>
 
     public override void RegisterAll()
     {
-        foreach (var party in MobileParty.All)
+        var objectManager = Campaign.Current?.CampaignObjectManager;
+
+        if (objectManager == null)
+        {
+            Logger.Error("Unable to register objects when CampaignObjectManager is null");
+            return;
+        }
+
+        foreach (var party in objectManager.MobileParties)
         {
             base.RegisterExistingObject(party.StringId, party);
-            Interlocked.Increment(ref InstanceCounter);
         }
     }
 

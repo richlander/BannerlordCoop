@@ -9,7 +9,7 @@ namespace GameInterface.Services.Workshops
     internal class WorkshopRegistry : RegistryBase<Workshop>
     {
         private const string WorkshopIdPrefix = $"Coop{nameof(Workshop)}";
-        private int InstanceCounter = 0;
+        private static int InstanceCounter = 0;
 
         public WorkshopRegistry(IRegistryCollection collection) : base(collection) { }
 

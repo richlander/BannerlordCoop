@@ -4,7 +4,5 @@
     {
         void Start();
         void Stop();
-
-        bool RunningState { get; }
     }
 }

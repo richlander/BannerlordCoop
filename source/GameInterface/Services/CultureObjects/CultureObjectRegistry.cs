@@ -1,22 +1,14 @@
 ﻿using GameInterface.Services.Registry;
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;
 using TaleWorlds.ObjectSystem;
 
 namespace GameInterface.Services.CultureObjects
 {
     internal class CultureObjectRegistry : RegistryBase<CultureObject>
     {
-        public override IEnumerable<Type> ManagedTypes => new Type[] {
-            typeof(BasicCultureObject),
-            typeof(CultureObject),
-        };
-
         private const string CultureStringIdPrefix = "CoopCulture";
-        private int InstanceCounter = 0;
+        private static int InstanceCounter = 0;
 
         public CultureObjectRegistry(IRegistryCollection collection) : base(collection) { }
 

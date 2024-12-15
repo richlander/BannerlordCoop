@@ -11,7 +11,7 @@ namespace GameInterface.Services.MapEvents;
 internal class MapEventRegistry : RegistryBase<MapEvent>
 {
     private const string MapEventIdPrefix = "CoopMapEvent";
-    private int InstanceCounter = 0;
+    private static int InstanceCounter = 0;
 
     public MapEventRegistry(IRegistryCollection collection) : base(collection) { }
 

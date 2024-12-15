@@ -32,10 +32,10 @@ internal class EquipmentLifetimePatches
 
         
         if (ModInformation.IsClient)
-        {
+        {   /*
             Logger.Error("Client created unmanaged {name}\n"
                 + "Callstack: {callstack}", typeof(Equipment), Environment.StackTrace);
-
+            */
             return true;
         }
 
@@ -53,10 +53,10 @@ internal class EquipmentLifetimePatches
 
         if (ModInformation.IsClient)
         {
-            Logger.Error("Client created unmanaged {name}\n"
+           /* Logger.Error("Client created unmanaged {name}\n"
                 + "Callstack: {callstack}", typeof(Equipment), Environment.StackTrace);
 
-
+            */
             return true;
         }
 
@@ -67,20 +67,21 @@ internal class EquipmentLifetimePatches
 
     [HarmonyPatch(typeof(Hero), nameof(Hero.OnDeath))]
     [HarmonyPrefix]
-    private static void OnDeathPrefix(ref Hero __instance)
+    private static bool OnDeathPrefix(ref Hero __instance)
     {
-        if (CallOriginalPolicy.IsOriginalAllowed()) return;
+        if (CallOriginalPolicy.IsOriginalAllowed()) return true;
 
         if (ModInformation.IsClient)
         {
             Logger.Error("Client created unmanaged {name}\n"
                 + "Callstack: {callstack}", typeof(Hero), Environment.StackTrace);
-            return;
+            return true;
         }
 
         var message = new EquipmentRemoved(__instance.BattleEquipment, __instance.CivilianEquipment);
 
         MessageBroker.Instance.Publish(__instance, message);
+        return true;
     }
 
 

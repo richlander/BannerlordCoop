@@ -4,7 +4,6 @@ using Common.Network;
 using Coop.Core;
 using Coop.Core.Client;
 using Coop.Core.Server;
-using GameInterface;
 using Xunit;
 
 namespace Coop.Tests.Autofac
@@ -14,7 +13,7 @@ namespace Coop.Tests.Autofac
         [Fact]
         public void Client_Container_Build()
         {
-            var containerProvider = new Core.ContainerProvider();
+            var containerProvider = new ContainerProvider();
 
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterModule<ClientModule>();
@@ -35,11 +34,10 @@ namespace Coop.Tests.Autofac
         [Fact]
         public void Server_Container_Build()
         {
-            var containerProvider = new Core.ContainerProvider();
+            var containerProvider = new ContainerProvider();
 
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterModule<ServerModule>();
-            builder.RegisterModule<GameInterfaceModule>();
             builder.RegisterInstance(containerProvider).As<IContainerProvider>();
             var container = builder.Build();
 

@@ -63,7 +63,7 @@ public class MobilePartyFieldPatches
             return;
         }
 
-        MessageBroker.Instance.Publish(instance, new AttachedToChanged(newAttachedTo?.StringId, instance.StringId));
+        MessageBroker.Instance.Publish(instance, new AttachedToChanged(newAttachedTo.StringId, instance.StringId));
 
         instance._attachedTo = newAttachedTo;
     }

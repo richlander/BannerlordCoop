@@ -9,7 +9,7 @@ namespace GameInterface.Services.SiegeEngines
     internal class SiegeEngineConstructionProgressRegistry : RegistryBase<SiegeEngineConstructionProgress>
     {
         private const string SiegeEngineConstructionProgressIdPrefix = "CoopSiegeEngineConstructionProgress";
-        private int InstanceCounter = 0;
+        private static int InstanceCounter = 0;
 
         public SiegeEngineConstructionProgressRegistry(IRegistryCollection collection) : base(collection)
         {

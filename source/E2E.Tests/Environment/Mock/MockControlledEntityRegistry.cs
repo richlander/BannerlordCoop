@@ -10,12 +10,7 @@ internal class MockControlledEntityRegistry : IControlledEntityRegistry
         throw new NotImplementedException();
     }
 
-    public void LoadControlledEntities(Dictionary<string, HashSet<ControlledEntity>> controlledEntityMap)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Dictionary<string, HashSet<ControlledEntity>> PackageControlledEntities()
+    public IReadOnlyDictionary<string, Common.IReadOnlySet<ControlledEntity>> PackageControlledEntities()
     {
         throw new NotImplementedException();
     }

@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.ObjectSystem;
 
 namespace GameInterface.Services.Registry;
@@ -85,8 +84,6 @@ internal abstract class RegistryBase<T> : IRegistry<T> where T : class
         if (obj is MBObjectBase mbObject)
         {
             mbObject.StringId = newId;
-
-            MBObjectManager.Instance?.RegisterObject(mbObject);
         }
 
         objIds.Add(newId, castedObj);

@@ -6,7 +6,7 @@ namespace GameInterface.Services.PartyBases;
 internal class PartyBaseRegistry : RegistryBase<PartyBase>
 {
     private const string PartyBaseIdPrefix = "CoopPartyBase";
-    private int InstanceCounter = 0;
+    private static int InstanceCounter = 0;
 
     public PartyBaseRegistry(IRegistryCollection collection) : base(collection)
     {

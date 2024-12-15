@@ -1,5 +1,4 @@
-﻿using GameInterface.Services.MobileParties.Extensions;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 
@@ -28,7 +27,7 @@ internal class PartiesThinkPatch
         {
             var currentIdx = (CurrentStartIdx + i) % __instance.MobileParties.Count;
 
-            __instance.MobileParties[currentIdx].Ai?.Tick(dt);
+            __instance.MobileParties[currentIdx].Ai.Tick(dt);
         }
 
         CurrentStartIdx = (CurrentStartIdx + UPDATES_PER_TICK) % __instance.MobileParties.Count;

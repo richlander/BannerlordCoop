@@ -48,11 +48,9 @@ namespace GameInterface.Services.PartyVisuals.Handlers
         {
             objectManager.TryGetObject<PartyBase>(payload.What.PartyBaseId, out var partyBase);
 
-            using(new AllowedThread())
-            {
-                PartyVisual newVisual = new PartyVisual(partyBase);
-                objectManager.AddExisting(payload.What.PartyVisualId, newVisual);
-            }
+            PartyVisual newVisual = new PartyVisual(partyBase);
+
+            objectManager.AddExisting(payload.What.PartyVisualId, newVisual);
         }
 
         private void Handle(MessagePayload<PartyVisualDestroyed> payload)

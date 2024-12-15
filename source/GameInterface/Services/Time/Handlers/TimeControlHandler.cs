@@ -1,5 +1,4 @@
 ﻿using Common.Messaging;
-using Common.Network;
 using GameInterface.Services.Heroes.Interaces;
 using GameInterface.Services.Heroes.Messages;
 using System;
@@ -14,8 +13,7 @@ internal class TimeControlHandler : IHandler
 
     public TimeControlHandler(
         ITimeControlInterface timeControlInterface,
-        IMessageBroker messageBroker,
-        INetwork network)
+        IMessageBroker messageBroker)
     {
         this.timeControlInterface = timeControlInterface;
         this.messageBroker = messageBroker;
@@ -42,5 +40,7 @@ internal class TimeControlHandler : IHandler
         var payload = obj.What;
 
         timeControlInterface.SetTimeControl(payload.NewTimeMode);
+
+        messageBroker.Respond(obj.Who, new TimeControlModeSet(payload.NewTimeMode));
     }
 }

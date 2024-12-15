@@ -10,7 +10,7 @@ namespace GameInterface.Services.PartyVisuals
     internal class PartyVisualRegistry : RegistryBase<PartyVisual>
     {
         private const string PartyVisualIdPrefix = $"Coop{nameof(PartyVisual)}";
-        private int InstanceCounter = 0;
+        private static int InstanceCounter = 0;
 
         public PartyVisualRegistry(IRegistryCollection collection) : base(collection) { }
 
