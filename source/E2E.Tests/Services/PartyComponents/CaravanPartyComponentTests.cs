@@ -29,7 +29,7 @@ public class CaravanPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
-        var leaderField = AccessTools.Field(typeof(LordPartyComponent), nameof(LordPartyComponent._leader));
+        var leaderField = AccessTools.Field(typeof(CaravanPartyComponent), nameof(CaravanPartyComponent._leader));
 
         var leaderIntercept = TestEnvironment.GetIntercept(leaderField);
 
@@ -47,7 +47,7 @@ public class CaravanPartyComponentTests : IDisposable
             var newParty = CaravanPartyComponent.CreateCaravanParty(owner, settlement, caravanLeader: owner);
             partyId = newParty.StringId;
 
-            leaderIntercept.Invoke(null, new object[] { newParty.LordPartyComponent, newLeaderHero });
+            leaderIntercept.Invoke(null, new object[] { newParty.CaravanPartyComponent, newLeaderHero });
 
         }, new MethodBase[]
         {
@@ -64,7 +64,7 @@ public class CaravanPartyComponentTests : IDisposable
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var newParty));
             Assert.IsType<CaravanPartyComponent>(newParty.PartyComponent);
 
-            Assert.Equal(newLeaderHero.StringId, newParty.LordPartyComponent._leader.StringId);
+            Assert.Equal(newLeaderHero.StringId, newParty.CaravanPartyComponent._leader.StringId);
         }
     }
 
