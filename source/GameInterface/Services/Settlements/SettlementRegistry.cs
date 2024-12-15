@@ -11,7 +11,7 @@ namespace GameInterface.Services.Settlements;
 internal class SettlementRegistry : RegistryBase<Settlement>
 {
     public static readonly string SettlementStringIdPrefix = "CoopSettlement";
-    private static int SettlementCounter = 0;
+    private static int InstanceCounter = 0;
 
     public SettlementRegistry(IRegistryCollection collection) : base(collection) { }
 
@@ -42,7 +42,7 @@ internal class SettlementRegistry : RegistryBase<Settlement>
 
     protected override string GetNewId(Settlement settlement)
     {
-        return $"{SettlementStringIdPrefix}_{Interlocked.Increment(ref SettlementCounter)}";
+        return $"{SettlementStringIdPrefix}_{Interlocked.Increment(ref InstanceCounter)}";
     }
 
     private void AddToCampaignObjectManager(object obj)
