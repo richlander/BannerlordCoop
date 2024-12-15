@@ -50,12 +50,13 @@ public abstract class CoopNetworkBase : INetwork, INetEventListener
 
     public virtual void Dispose()
     {
+        netManager.Stop();
+
+        if (CancellationTokenSource.IsCancellationRequested) return;
+
         CancellationTokenSource?.Cancel();
         CancellationTokenSource?.Dispose();
         UpdateThread?.Join(Configuration.ObjectCreationTimeout);
-
-        netManager.DisconnectAll();
-        netManager.Stop();
     }
 
     private void UpdateThreadMethod()

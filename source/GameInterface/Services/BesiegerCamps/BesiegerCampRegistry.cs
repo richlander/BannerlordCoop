@@ -9,7 +9,7 @@ namespace GameInterface.Services.BesiegerCamps;
 internal class BeseigerCampRegistry : RegistryBase<BesiegerCamp>
 {
     private const string BeseigerCampIdPrefix = "CoopBeseigerCamp";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public BeseigerCampRegistry(IRegistryCollection collection) : base(collection)
     {

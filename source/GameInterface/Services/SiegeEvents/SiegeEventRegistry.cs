@@ -13,7 +13,7 @@ namespace GameInterface.Services.SiegeEvents;
 internal class SiegeEventRegistry : RegistryBase<SiegeEvent>
 {
     private const string SiegeEventIdPrefix = "CoopSiegeEvent";
-    private static int InstanceCounter = 0;
+    private int InstanceCounter = 0;
 
     public SiegeEventRegistry(IRegistryCollection collection) : base(collection)
     {
