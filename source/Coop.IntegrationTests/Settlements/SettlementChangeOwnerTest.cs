@@ -27,7 +27,7 @@ namespace Coop.IntegrationTests.Settlements
             var capturerId = "Capturer Id";
             var detail = 2;
 
-            var message = new LocalSettlementOwnershipChange(settlementId, ownerId, capturerId, detail);
+            var message = new SettlementOwnershipChanged(settlementId, ownerId, capturerId, detail);
 
             var client1 = TestEnvironment.Clients.First();
             var server = TestEnvironment.Server;
