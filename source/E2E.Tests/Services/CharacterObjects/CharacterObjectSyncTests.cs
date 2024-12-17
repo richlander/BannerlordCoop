@@ -4,11 +4,9 @@ using E2E.Tests.Util;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
-using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.Settlements.Buildings;
 using Xunit.Abstractions;
 
-namespace E2E.Tests.Services.Buildings
+namespace E2E.Tests.Services.CharacterObjects
 {
     public class CharacterObjectSyncTests : IDisposable
     {
@@ -18,8 +16,7 @@ namespace E2E.Tests.Services.Buildings
 
         IEnumerable<EnvironmentInstance> Clients => TestEnvironment.Clients;
 
-        private readonly string CharacterId;
-        private readonly string HeroId;
+        private string HeroId;
         private Occupation newOccupation = Occupation.Armorer;
         private CharacterObject newCharacterObject = new CharacterObject();
         private CharacterTraits newCharacterTraits = new CharacterTraits();
@@ -29,20 +26,6 @@ namespace E2E.Tests.Services.Buildings
         public CharacterObjectSyncTests(ITestOutputHelper output)
         {
             TestEnvironment = new E2ETestEnvironment(output);
-
-            CharacterObject characterObject = new CharacterObject();
-            Hero hero = new Hero();
-
-            // Create objects on the server
-            Assert.True(Server.ObjectManager.AddNewObject(characterObject, out CharacterId));
-            Assert.True(Server.ObjectManager.AddNewObject(hero, out HeroId));
-
-            // Create objects on all clients
-            foreach (var client in Clients)
-            {
-                Assert.True(client.ObjectManager.AddExisting(CharacterId, characterObject));
-                Assert.True(client.ObjectManager.AddExisting(HeroId, hero));
-            }
         }
 
         public void Dispose()
@@ -76,49 +59,51 @@ namespace E2E.Tests.Services.Buildings
             // Act
             server.Call(() =>
             {
-                Assert.True(server.ObjectManager.TryGetObject<CharacterObject>(CharacterId, out var serverCharacter));
+                Hero hero = GameObjectCreator.CreateInitializedObject<Hero>();
+
+                Assert.True(server.ObjectManager.TryGetId(hero, out HeroId));
+
                 Assert.True(server.ObjectManager.TryGetObject<Hero>(HeroId, out var serverHero));
 
                 // Simulate the field changing
-                occupationIntercept.Invoke(null, new object[] { serverCharacter, newOccupation });
-                battleEquipmentTemplateIntercept.Invoke(null, new object[] { serverCharacter, newCharacterObject });
-                civilianEquipmentTemplateIntercept.Invoke(null, new object[] { serverCharacter, newCharacterObject });
-                characterTraitsIntercept.Invoke(null, new object[] { serverCharacter, newCharacterTraits });
-                personaIntercept.Invoke(null, new object[] { serverCharacter, newTraitObject });
-                originCharacterIntercept.Invoke(null, new object[] { serverCharacter, newCharacterObject });
-                characterRestrictionIntercept.Invoke(null, new object[] { serverCharacter, newRestrictionFlags });
+                occupationIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newOccupation });
+                battleEquipmentTemplateIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newCharacterObject });
+                civilianEquipmentTemplateIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newCharacterObject });
+                characterTraitsIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newCharacterTraits });
+                personaIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newTraitObject });
+                originCharacterIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newCharacterObject });
+                characterRestrictionIntercept.Invoke(null, new object[] { serverHero.CharacterObject, newRestrictionFlags });
 
-                serverCharacter.HiddenInEncylopedia = true;
-                serverCharacter.HeroObject = serverHero;
+                serverHero.CharacterObject.HiddenInEncylopedia = true;
+                serverHero.CharacterObject.HeroObject = serverHero;
 
-                Assert.Equal(newOccupation, serverCharacter.Occupation);
-                Assert.Equal(newCharacterObject, serverCharacter._battleEquipmentTemplate);
-                Assert.Equal(newCharacterObject, serverCharacter._civilianEquipmentTemplate);
-                Assert.Equal(newCharacterTraits, serverCharacter._characterTraits);
-                Assert.Equal(newTraitObject, serverCharacter._persona);
-                Assert.Equal(newCharacterObject, serverCharacter._originCharacter);
-                Assert.Equal(newRestrictionFlags, serverCharacter._characterRestrictionFlags);
+                Assert.Equal(newOccupation, serverHero.CharacterObject.Occupation);
+                Assert.Equal(newCharacterObject, serverHero.CharacterObject._battleEquipmentTemplate);
+                Assert.Equal(newCharacterObject, serverHero.CharacterObject._civilianEquipmentTemplate);
+                Assert.Equal(newCharacterTraits, serverHero.CharacterObject._characterTraits);
+                Assert.Equal(newTraitObject, serverHero.CharacterObject._persona);
+                Assert.Equal(newCharacterObject, serverHero.CharacterObject._originCharacter);
+                Assert.Equal(newRestrictionFlags, serverHero.CharacterObject._characterRestrictionFlags);
 
-                Assert.True(serverCharacter.HiddenInEncylopedia);
-                Assert.Equal(serverHero, serverCharacter.HeroObject);
+                Assert.True(serverHero.CharacterObject.HiddenInEncylopedia);
+                Assert.Equal(serverHero, serverHero.CharacterObject.HeroObject);
             });
 
             // Assert
             foreach (var client in Clients)
             {
-                Assert.True(client.ObjectManager.TryGetObject<CharacterObject>(CharacterId, out var clientCharacter));
                 Assert.True(client.ObjectManager.TryGetObject<Hero>(HeroId, out var clientHero));
 
-                Assert.Equal(newOccupation, clientCharacter.Occupation);
-                Assert.Equal(newCharacterObject, clientCharacter._battleEquipmentTemplate);
-                Assert.Equal(newCharacterObject, clientCharacter._civilianEquipmentTemplate);
-                Assert.Equal(newCharacterTraits, clientCharacter._characterTraits);
-                Assert.Equal(newTraitObject, clientCharacter._persona);
-                Assert.Equal(newCharacterObject, clientCharacter._originCharacter);
-                Assert.Equal(newRestrictionFlags, clientCharacter._characterRestrictionFlags);
+                Assert.Equal(newOccupation, clientHero.CharacterObject.Occupation);
+                Assert.Equal(newCharacterObject, clientHero.CharacterObject._battleEquipmentTemplate);
+                Assert.Equal(newCharacterObject, clientHero.CharacterObject._civilianEquipmentTemplate);
+                Assert.Equal(newCharacterTraits, clientHero.CharacterObject._characterTraits);
+                Assert.Equal(newTraitObject, clientHero.CharacterObject._persona);
+                Assert.Equal(newCharacterObject, clientHero.CharacterObject._originCharacter);
+                Assert.Equal(newRestrictionFlags, clientHero.CharacterObject._characterRestrictionFlags);
 
-                Assert.True(clientCharacter.HiddenInEncylopedia);
-                Assert.Equal(clientHero, clientCharacter.HeroObject);
+                Assert.True(clientHero.CharacterObject.HiddenInEncylopedia);
+                Assert.Equal(clientHero, clientHero.CharacterObject.HeroObject);
             }
         }
     }
