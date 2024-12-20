@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 using static TaleWorlds.CampaignSystem.Party.MobileParty;
 
 namespace E2E.Tests.Services.MobileParties;
-public class MobilePartyPropertyTests : IDisposable
+public class MobilePartySyncTests : IDisposable
 {
     E2ETestEnvironment TestEnvironement { get; }
 
@@ -24,7 +24,7 @@ public class MobilePartyPropertyTests : IDisposable
     string PartyId2 { get; set; }
     string HeroId { get; set; }
 
-    public MobilePartyPropertyTests(ITestOutputHelper output)
+    public MobilePartySyncTests(ITestOutputHelper output)
     {
         TestEnvironement = new E2ETestEnvironment(output);
 
@@ -68,30 +68,6 @@ public class MobilePartyPropertyTests : IDisposable
         Server.Call(() =>
         {
             serverParty.CustomName = new TextObject("NewTestCustomName");
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.CustomName.Value, serverParty.CustomName.Value);
-        }
-    }
-
-    [Fact]
-    public void ClientChangeCustomName_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.CustomName = new TextObject("NewTestCustomName");
         });
 
 
@@ -179,30 +155,6 @@ public class MobilePartyPropertyTests : IDisposable
     }
 
     [Fact]
-    public void ClientAggressiveness_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.Aggressiveness = 2f;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.Aggressiveness, serverParty.Aggressiveness);
-        }
-    }
-
-    [Fact]
     public void ServerChangeObjective_SyncAllClients()
     {
         Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
@@ -268,30 +220,6 @@ public class MobilePartyPropertyTests : IDisposable
     }
 
     [Fact]
-    public void ClientAi_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.Ai = null;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.Ai._mobileParty.StringId, serverParty.Ai._mobileParty.StringId);
-        }
-    }
-
-    [Fact]
     public void ServerChangeIsActive_SyncAllClients()
     {
         Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
@@ -300,30 +228,6 @@ public class MobilePartyPropertyTests : IDisposable
         Server.Call(() =>
         {
             serverParty.IsActive = !serverParty.IsActive;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.IsActive, serverParty.IsActive);
-        }
-    }
-
-    [Fact]
-    public void ClientIsActive_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.IsActive = !serverParty.IsActive;
         });
 
 
@@ -626,31 +530,6 @@ public class MobilePartyPropertyTests : IDisposable
     }
 
     [Fact]
-    public void ClientCurrentSettlement_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-        var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.CurrentSettlement = settlement;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.CurrentSettlement, serverParty.CurrentSettlement);
-        }
-    }
-
-    [Fact]
     public void ServerChangeAttachedTo_SyncAllClients()
     {
         Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
@@ -660,30 +539,6 @@ public class MobilePartyPropertyTests : IDisposable
         Server.Call(() =>
         {
             serverParty.AttachedTo = extraParty;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.AttachedTo.StringId, serverParty.AttachedTo.StringId);
-        }
-    }
-
-    [Fact]
-    public void ClientAttachedTo_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.AttachedTo = null;
         });
 
 
@@ -729,30 +584,6 @@ public class MobilePartyPropertyTests : IDisposable
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var clientParty));
             Assert.True(client.ObjectManager.TryGetId(clientParty.BesiegerCamp, out var clientBesiegerCampId));
             Assert.Equal(besiegerCampId, clientBesiegerCampId);
-        }
-    }
-
-    [Fact]
-    public void ClientBesiegerCamp_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.BesiegerCamp = null;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.BesiegerCamp, serverParty.BesiegerCamp);
         }
     }
 
@@ -828,34 +659,6 @@ public class MobilePartyPropertyTests : IDisposable
 
             // Assert hero changes
             Assert.NotEqual(HeroId, serverParty.Engineer.StringId);
-            Assert.Equal(clientParty.Engineer.StringId, serverParty.Engineer.StringId);
-        }
-    }
-
-    [Fact]
-    public void ClientEngineer_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-
-            // Null because creating a hero causes issues
-            serverParty.Engineer = null;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-
-            // Assert hero does not actually change
-            Assert.Equal(HeroId, serverParty.Engineer.StringId);
             Assert.Equal(clientParty.Engineer.StringId, serverParty.Engineer.StringId);
         }
     }
@@ -965,7 +768,7 @@ public class MobilePartyPropertyTests : IDisposable
     }
 
     [Fact]
-    public void ServerChangeActualClan_SyncAllClients()
+    public void AServerUpdateParty_SyncAllClients()
     {
         Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
 
@@ -994,11 +797,13 @@ public class MobilePartyPropertyTests : IDisposable
     }
 
     [Fact]
-    public void ClientActualClan_NoChange()
+    public void AClientUpdateParty_NoChange()
     {
         Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
 
         var clan = GameObjectCreator.CreateInitializedObject<Clan>();
+        var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+
         Server.ObjectManager.AddNewObject(clan, out string clanId);
 
         foreach (var client in TestEnvironement.Clients)
@@ -1017,6 +822,16 @@ public class MobilePartyPropertyTests : IDisposable
         firstClient.Call(() =>
         {
             serverParty.ActualClan = null;
+            serverParty.Aggressiveness = 2f;
+            serverParty.Ai = null;
+            serverParty.AttachedTo = null;
+            serverParty.BesiegerCamp = null;
+            serverParty.CustomName = new TextObject("invalid");
+            serverParty.CurrentSettlement = settlement;
+            serverParty.Engineer = null;
+            serverParty.EventPositionAdder = new Vec2(1f, 4f);
+            serverParty.IsActive = !serverParty.IsActive;
+            serverParty.IsBandit = !serverParty.IsBandit;
         });
 
 
@@ -1025,6 +840,16 @@ public class MobilePartyPropertyTests : IDisposable
         {
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
             Assert.Equal(serverParty.ActualClan.StringId, clientParty.ActualClan.StringId);
+            Assert.Equal(serverParty.Aggressiveness, clientParty.Aggressiveness);
+            Assert.Equal(clientParty.Ai._mobileParty.StringId, serverParty.Ai._mobileParty.StringId);
+            Assert.Equal(clientParty.AttachedTo.StringId, serverParty.AttachedTo.StringId);
+            Assert.Equal(clientParty.BesiegerCamp, serverParty.BesiegerCamp);
+            Assert.Equal(clientParty.CustomName.Value, serverParty.CustomName.Value);
+            Assert.Equal(clientParty.CurrentSettlement, serverParty.CurrentSettlement);
+            Assert.Equal(clientParty.Engineer.StringId, serverParty.Engineer.StringId);
+            Assert.Equal(clientParty.EventPositionAdder, serverParty.EventPositionAdder);
+            Assert.Equal(clientParty.IsActive, serverParty.IsActive);
+            Assert.Equal(clientParty.IsBandit, serverParty.IsBandit);
         }
     }
 
@@ -1081,30 +906,6 @@ public class MobilePartyPropertyTests : IDisposable
         Server.Call(() =>
         {
             serverParty.EventPositionAdder = new Vec2(5f, 4f);
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.EventPositionAdder, serverParty.EventPositionAdder);
-        }
-    }
-
-    [Fact]
-    public void ClientEventPositionAdder_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.EventPositionAdder = new Vec2(1f, 4f);
         });
 
 
@@ -1387,30 +1188,6 @@ public class MobilePartyPropertyTests : IDisposable
         Server.Call(() =>
         {
             serverParty.IsBandit = !serverParty.IsBandit;
-        });
-
-
-        // Assert
-        foreach (var client in TestEnvironement.Clients)
-        {
-            Assert.True(client.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            Assert.Equal(clientParty.IsBandit, serverParty.IsBandit);
-        }
-    }
-
-    [Fact]
-    public void ClientIsBandit_NoChange()
-    {
-        Assert.True(Server.ObjectManager.TryGetObject<MobileParty>(PartyId, out var serverParty));
-
-        // Act
-        var firstClient = Clients.First();
-
-
-        firstClient.Call(() =>
-        {
-            Assert.True(firstClient.ObjectManager.TryGetObject<MobileParty>(PartyId, out var clientParty));
-            clientParty.IsBandit = !serverParty.IsBandit;
         });
 
 
