@@ -77,7 +77,7 @@ internal class TroopRosterCollectionPatches
 
         var message = new DataArrayUpdated(instance, value.Character, value._number, value._woundedNumber, value._xp, value.DeltaXp, index);
         MessageBroker.Instance.Publish(instance, message);
-
+        
         data[index] = value;
     }
 }
