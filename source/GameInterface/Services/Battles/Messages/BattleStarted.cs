@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TaleWorlds.CampaignSystem.Party;
 
 namespace GameInterface.Services.Battles.Messages
 {
     internal class BattleStarted : IMessage
     {
-        public string AttackerId { get; }
-        public string DefenderId { get; }
+        public MobileParty Attacker { get; }
+        public MobileParty Defender { get; }
 
-        public BattleStarted(string attackerId, string defenderId)
+        public BattleStarted(MobileParty attacker, MobileParty defender)
         {
-            AttackerId = attackerId;
-            DefenderId = defenderId;
+            Attacker = attacker;
+            Defender = defender;
         }
     }
 }

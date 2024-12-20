@@ -35,7 +35,7 @@ namespace GameInterface.Services.MapEventParties.Patches
                 return false;
             }
 
-            var message = new MapEventPartyCreated(__instance);
+            var message = new MapEventPartyCreated(__instance, party);
 
             MessageBroker.Instance.Publish(__instance, message);
 

@@ -1,4 +1,5 @@
-﻿using Common.Logging;
+﻿using Common;
+using Common.Logging;
 using Common.Messaging;
 using Common.Network;
 using Common.Util;
@@ -7,20 +8,14 @@ using GameInterface.Services.MapEvents.Messages;
 using GameInterface.Services.MapEventSides.Messages;
 using GameInterface.Services.ObjectManager;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
-using TaleWorlds.ObjectSystem;
 
 namespace GameInterface.Services.MapEventSides.Handlers;
 internal class MapEventSideLifetimeHandler : IHandler
 {
-    private static readonly ILogger Logger = LogManager.GetLogger<MapEventHandler>();
+    private static readonly ILogger Logger = LogManager.GetLogger<MapEventSideLifetimeHandler>();
 
     private readonly IMessageBroker messageBroker;
     private readonly INetwork network;
@@ -69,22 +64,33 @@ internal class MapEventSideLifetimeHandler : IHandler
         if (objectManager.TryGetObject<MobileParty>(data.MobilePartyId, out var mobileParty) == false) return;
 
         var battleSideEnum = (BattleSideEnum)data.BattleSide;
-
-        var newMapEventSide = new MapEventSide(mapEvent, battleSideEnum, mobileParty.Party);
-
-        //TODO: remove this in favor of syncing collection
-        switch(battleSideEnum)
+        
+        GameLoopRunner.RunOnMainThread(() =>
         {
-            case BattleSideEnum.Attacker:
-                mapEvent._sides[1] = newMapEventSide;
-                break;
+            using (new AllowedThread())
+            {
+                var newMapEventSide = new MapEventSide(mapEvent, battleSideEnum, mobileParty.Party);
 
-            case BattleSideEnum.Defender:
-                mapEvent._sides[0] = newMapEventSide;
-                break;
-        }
+            //TODO: remove this in favor of syncing collection
+                switch (battleSideEnum)
+                {
+                    case BattleSideEnum.Attacker:
+                        mapEvent._sides[1] = newMapEventSide;
+                        break;
 
-        objectManager.AddExisting(payload.What.MapEventSideId, newMapEventSide);
+                    case BattleSideEnum.Defender:
+                        mapEvent._sides[0] = newMapEventSide;
+                        break;
+                }
+
+                if (mobileParty == MobileParty.MainParty)
+                {
+                    mobileParty.MapEventSide = newMapEventSide;
+                }
+
+                objectManager.AddExisting(payload.What.MapEventSideId, newMapEventSide);
+            }
+        });
     }
 
     private void Handle(MessagePayload<MapEventSideDestroyed> payload)

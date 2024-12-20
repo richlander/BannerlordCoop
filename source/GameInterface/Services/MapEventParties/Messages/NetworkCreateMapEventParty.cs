@@ -7,11 +7,15 @@ namespace GameInterface.Services.MapEventParties.Messages
     internal record NetworkCreateMapEventParty : ICommand
     {
         [ProtoMember(1)]
-        public string Id { get; }
+        public string MapEventPartyId { get; }
 
-        public NetworkCreateMapEventParty(string id)
+        [ProtoMember(2)]
+        public string PartyBaseId { get; }
+
+        public NetworkCreateMapEventParty(string mapEventPartyId, string partyBaseId)
         {
-            Id = id;
+            MapEventPartyId = mapEventPartyId;
+            PartyBaseId = partyBaseId;
         }
     }
 }

@@ -13,6 +13,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
+using TaleWorlds.CampaignSystem.GameState;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
@@ -67,11 +69,20 @@ internal class EncounterManagerPatches
         // Disables interaction between players, this will be handled in a future issue
         if (!attackerParty.MobileParty.IsPartyControlled() && !defenderParty.MobileParty.IsPartyControlled()) { return false; }
 
-        MessageBroker.Instance.Publish(attackerParty, new BattleStarted(
-            attackerParty.MobileParty.StringId,
-            defenderParty.MobileParty.StringId));
-
         return true;
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(EncounterManager.StartPartyEncounter))]
+    static void Postfix(PartyBase attackerParty, PartyBase defenderParty)
+    {
+        if (ModInformation.IsClient) return;
+
+        if (AllowedThread.IsThisThreadAllowed()) return;
+
+        MessageBroker.Instance.Publish(attackerParty, new BattleStarted(
+            attackerParty.MobileParty,
+            defenderParty.MobileParty));
     }
 
     public static void OverrideOnPartyInteraction(MobileParty attacker, MobileParty defender)
@@ -80,6 +91,14 @@ internal class EncounterManagerPatches
         {
             using (new AllowedThread())
             {
+                if(attacker == MobileParty.MainParty || defender == MobileParty.MainParty)
+                {
+                    MapState mapState = Game.Current.GameStateManager.ActiveState as MapState;
+                    if (mapState != null)
+                    {
+                        mapState.OnMainPartyEncounter();
+                    }
+                }
                 EncounterManager.StartPartyEncounter(attacker.Party, defender.Party);
             }
         }, true);

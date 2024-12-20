@@ -49,7 +49,9 @@ namespace GameInterface.Services.Battles.Handlers
 
         private void Handle(MessagePayload<BattleStarted> payload)
         {
-            network.SendAll(new NetworkStartBattle(payload.What.AttackerId, payload.What.DefenderId));
+            var data = payload.What;
+
+            network.SendAll(new NetworkStartBattle(data.Attacker.StringId, data.Defender.StringId));
         }
 
         private void Handle(MessagePayload<NetworkStartBattle> payload)

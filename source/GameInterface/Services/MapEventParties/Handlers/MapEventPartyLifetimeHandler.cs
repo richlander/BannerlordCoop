@@ -1,4 +1,5 @@
-﻿using Common.Logging;
+﻿using Common;
+using Common.Logging;
 using Common.Messaging;
 using Common.Network;
 using Common.Util;
@@ -6,6 +7,7 @@ using GameInterface.Services.MapEventParties.Messages;
 using GameInterface.Services.ObjectManager;
 using Serilog;
 using TaleWorlds.CampaignSystem.MapEvents;
+using TaleWorlds.CampaignSystem.Party;
 
 namespace GameInterface.Services.MapEventParties.Handlers
 {
@@ -39,20 +41,30 @@ namespace GameInterface.Services.MapEventParties.Handlers
 
             if (objectManager.AddNewObject(obj.MapEventParty, out var newId) == false) return;
 
-            network.SendAll(new NetworkCreateMapEventParty(newId));
+            if (objectManager.TryGetId(obj.PartyBase, out string partyBaseId) == false) return;
+
+            network.SendAll(new NetworkCreateMapEventParty(newId, partyBaseId));
         }
 
         private void Handle(MessagePayload<NetworkCreateMapEventParty> payload)
         {
             var obj = payload.What;
 
-            var newMapEventParty = ObjectHelper.SkipConstructor<MapEventParty>();
+            if (objectManager.TryGetObject(obj.PartyBaseId, out PartyBase partyBase) == false) return;
 
-            if (objectManager.AddExisting(obj.Id, newMapEventParty) == false)
+            GameLoopRunner.RunOnMainThread(() =>
             {
-                Logger.Error("Failed to create party with id {stringId}", obj.Id);
-                return;
-            }
+                using (new AllowedThread())
+                {
+                    var newMapEventParty = new MapEventParty(partyBase);
+
+                    if (objectManager.AddExisting(obj.MapEventPartyId, newMapEventParty) == false)
+                    {
+                        Logger.Error("Failed to create party with id {stringId}", obj.MapEventPartyId);
+                        return;
+                    }
+                }
+            });
         }
     }
 }

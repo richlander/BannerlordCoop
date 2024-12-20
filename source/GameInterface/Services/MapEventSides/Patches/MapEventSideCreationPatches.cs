@@ -29,7 +29,7 @@ internal class MapEventSideCreationPatches
         {
             Logger.Error("Client created unmanaged {name}\n"
                 + "Callstack: {callstack}", typeof(MapEventSide), Environment.StackTrace);
-            return true;
+            return false;
         }
 
         var message = new MapEventSideCreated(__instance, mapEvent, missionSide, leaderParty);
