@@ -30,7 +30,7 @@ public class PartyBehaviorPatchTests : IDisposable
         party.StringId = "TestEntityId";
 
         // Act
-        var runMethod = EncounterManagerPatches.HandleEncounterForMobilePartyPatch(ref party);
+        var runMethod = PartyEncounterManagerPatches.HandleEncounterForMobilePartyPatch(ref party);
 
         // Assert
         Assert.False(runMethod);
@@ -51,7 +51,7 @@ public class PartyBehaviorPatchTests : IDisposable
         entityRegistry.RegisterAsControlled(controllerId, party.StringId);
 
         // Act
-        var runMethod = EncounterManagerPatches.HandleEncounterForMobilePartyPatch(ref party);
+        var runMethod = PartyEncounterManagerPatches.HandleEncounterForMobilePartyPatch(ref party);
 
         // Assert
         Assert.True(runMethod);
