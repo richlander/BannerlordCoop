@@ -8,11 +8,11 @@ namespace GameInterface.Surrogates;
 internal struct CampaignTimeSurrogate
 {
     [ProtoMember(1)]
-    public long Data { get; set; }
+    public long NumberOfTicks { get; set; }
 
     public CampaignTimeSurrogate(CampaignTime campaignTime)
     {
-        Data = campaignTime._numTicks;
+        NumberOfTicks = campaignTime.NumTicks;
     }
 
     public static implicit operator CampaignTimeSurrogate(CampaignTime campaignTime)
@@ -22,6 +22,6 @@ internal struct CampaignTimeSurrogate
 
     public static implicit operator CampaignTime(CampaignTimeSurrogate surrogate)
     {
-        return new CampaignTime(surrogate.Data);
+        return new CampaignTime(surrogate.NumberOfTicks);
     }
 }

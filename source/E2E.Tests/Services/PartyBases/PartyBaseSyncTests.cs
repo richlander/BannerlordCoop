@@ -60,23 +60,17 @@ public class PartyBaseSyncTests : IDisposable
         var customOwner = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._customOwner));
         var index = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._index));
         var lastEatingTime = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastEatingTime));
-        var lastRosterVerNo = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastMemberRosterVersionNo));
         var lastMenPerTierVerNo = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastNumberOfMenPerTierVersionNo));
         var mapEventSideField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._mapEventSide));
         var numberMenHorseField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._numberOfMenWithHorse));
-        var partySizeLastCheckField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._partyMemberSizeLastCheckVersion));
-        var prisonerSizeLastCheckField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._prisonerSizeLastCheckVersion));
         var remainingFoodPercentageField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._remainingFoodPercentage));
         var lastNumberMenHorseVerionField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastNumberOfMenWithHorseVersionNo));
 
         // Get field intercept to use on the server to simulate the field changing
         var mapEventSideIntercept = TestEnvironment.GetIntercept(mapEventSideField);
         var numberMenHorseIntercept = TestEnvironment.GetIntercept(numberMenHorseField);
-        var partySizeLastCheckIntercept = TestEnvironment.GetIntercept(partySizeLastCheckField);
-        var prisonerSizeLastCheckIntercept = TestEnvironment.GetIntercept(prisonerSizeLastCheckField);
         var indexIntercept = TestEnvironment.GetIntercept(index);
         var lastEatingTimeIntercept = TestEnvironment.GetIntercept(lastEatingTime);
-        var lastRosterVerNoIntercept = TestEnvironment.GetIntercept(lastRosterVerNo);
         var lastMenPerTierVerNoIntercept = TestEnvironment.GetIntercept(lastMenPerTierVerNo);
         var customOwnerIntercept = TestEnvironment.GetIntercept(customOwner);
         var remainingFoodPercentageIntercept = TestEnvironment.GetIntercept(remainingFoodPercentageField);
@@ -106,11 +100,8 @@ public class PartyBaseSyncTests : IDisposable
             remainingFoodPercentageIntercept.Invoke(null, new object[] { partyBase, 5 });
             mapEventSideIntercept.Invoke(null, new object[] { partyBase, mapEventSide });
             numberMenHorseIntercept.Invoke(null, new object[] { partyBase, 5 });
-            partySizeLastCheckIntercept.Invoke(null, new object[] { partyBase, 5 });
-            prisonerSizeLastCheckIntercept.Invoke(null, new object[] { partyBase, 5 });
             indexIntercept.Invoke(null, new object[] { partyBase, 5 });
             lastEatingTimeIntercept.Invoke(null, new object[] { partyBase, new CampaignTime(5) });
-            lastRosterVerNoIntercept.Invoke(null, new object[] { partyBase, 5 });
             lastMenPerTierVerNoIntercept.Invoke(null, new object[] { partyBase, 5 });
             customOwnerIntercept.Invoke(null, new object[] { partyBase, hero });
             lastNumberMenHorseVersionIntercept.Invoke(null, new object[] { partyBase, 3 });
@@ -150,6 +141,7 @@ public class PartyBaseSyncTests : IDisposable
 
             Assert.Equal(clientParty, clientPartyBase.MobileParty);
             Assert.True(clientPartyBase.IsVisualDirty);
+            Assert.True(clientPartyBase.LevelMaskIsDirty);
             Assert.Equal(clientItemRoster, clientPartyBase.ItemRoster);
             Assert.Equal(clientMapEventSide, clientPartyBase.MapEventSide);
             Assert.Equal(clientMemberRoster, clientPartyBase.MemberRoster);
@@ -159,13 +151,10 @@ public class PartyBaseSyncTests : IDisposable
             Assert.Equal(clientHero, clientPartyBase._customOwner);
             Assert.Equal(5, clientPartyBase._index);
             Assert.Equal(new CampaignTime(5), clientPartyBase._lastEatingTime);
-            Assert.Equal(5, clientPartyBase._lastMemberRosterVersionNo);
             Assert.Equal(5, clientPartyBase._lastNumberOfMenPerTierVersionNo);
             Assert.Equal(3, clientPartyBase._lastNumberOfMenWithHorseVersionNo);
             Assert.Equal(clientMapEventSide, clientPartyBase._mapEventSide);
             Assert.Equal(5, clientPartyBase._numberOfMenWithHorse);
-            Assert.Equal(5, clientPartyBase._partyMemberSizeLastCheckVersion);
-            Assert.Equal(5, clientPartyBase._prisonerSizeLastCheckVersion);
             Assert.Equal(5, clientPartyBase._remainingFoodPercentage);
         }
     }
@@ -180,23 +169,17 @@ public class PartyBaseSyncTests : IDisposable
         var customOwner = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._customOwner));
         var index = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._index));
         var lastEatingTime = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastEatingTime));
-        var lastRosterVerNo = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastMemberRosterVersionNo));
         var lastMenPerTierVerNo = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastNumberOfMenPerTierVersionNo));
         var mapEventSideField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._mapEventSide));
         var numberMenHorseField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._numberOfMenWithHorse));
-        var partySizeLastCheckField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._partyMemberSizeLastCheckVersion));
-        var prisonerSizeLastCheckField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._prisonerSizeLastCheckVersion));
         var remainingFoodPercentageField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._remainingFoodPercentage));
         var lastNumberMenHorseVerionField = AccessTools.Field(typeof(PartyBase), nameof(PartyBase._lastNumberOfMenWithHorseVersionNo));
 
         // Get field intercept to use on the server to simulate the field changing
         var mapEventSideIntercept = TestEnvironment.GetIntercept(mapEventSideField);
         var numberMenHorseIntercept = TestEnvironment.GetIntercept(numberMenHorseField);
-        var partySizeLastCheckIntercept = TestEnvironment.GetIntercept(partySizeLastCheckField);
-        var prisonerSizeLastCheckIntercept = TestEnvironment.GetIntercept(prisonerSizeLastCheckField);
         var indexIntercept = TestEnvironment.GetIntercept(index);
         var lastEatingTimeIntercept = TestEnvironment.GetIntercept(lastEatingTime);
-        var lastRosterVerNoIntercept = TestEnvironment.GetIntercept(lastRosterVerNo);
         var lastMenPerTierVerNoIntercept = TestEnvironment.GetIntercept(lastMenPerTierVerNo);
         var customOwnerIntercept = TestEnvironment.GetIntercept(customOwner);
         var remainingFoodPercentageIntercept = TestEnvironment.GetIntercept(remainingFoodPercentageField);
@@ -248,11 +231,8 @@ public class PartyBaseSyncTests : IDisposable
             remainingFoodPercentageIntercept.Invoke(null, new object[] { partyBase, 5 });
             mapEventSideIntercept.Invoke(null, new object[] { partyBase, mapEventSide });
             numberMenHorseIntercept.Invoke(null, new object[] { partyBase, 5 });
-            partySizeLastCheckIntercept.Invoke(null, new object[] { partyBase, 5 });
-            prisonerSizeLastCheckIntercept.Invoke(null, new object[] { partyBase, 5 });
             indexIntercept.Invoke(null, new object[] { partyBase, 5 });
             lastEatingTimeIntercept.Invoke(null, new object[] { partyBase, new CampaignTime(5) });
-            lastRosterVerNoIntercept.Invoke(null, new object[] { partyBase, 5 });
             lastMenPerTierVerNoIntercept.Invoke(null, new object[] { partyBase, 5 });
             customOwnerIntercept.Invoke(null, new object[] { partyBase, hero });
             lastNumberMenHorseVersionIntercept.Invoke(null, new object[] { partyBase, 3 });
@@ -277,13 +257,10 @@ public class PartyBaseSyncTests : IDisposable
             Assert.NotEqual(clientHero, clientPartyBase._customOwner);
             Assert.NotEqual(5, clientPartyBase._index);
             Assert.NotEqual(new CampaignTime(5), clientPartyBase._lastEatingTime);
-            Assert.NotEqual(5, clientPartyBase._lastMemberRosterVersionNo);
             Assert.NotEqual(5, clientPartyBase._lastNumberOfMenPerTierVersionNo);
             Assert.NotEqual(3, clientPartyBase._lastNumberOfMenWithHorseVersionNo);
             Assert.NotEqual(clientMapEventSide, clientPartyBase._mapEventSide);
             Assert.NotEqual(5, clientPartyBase._numberOfMenWithHorse);
-            Assert.NotEqual(5, clientPartyBase._partyMemberSizeLastCheckVersion);
-            Assert.NotEqual(5, clientPartyBase._prisonerSizeLastCheckVersion);
             Assert.NotEqual(5, clientPartyBase._remainingFoodPercentage);
         }
     }

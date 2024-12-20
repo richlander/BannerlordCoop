@@ -21,7 +21,8 @@ public class LeaveSettlementActionPatches
     [HarmonyPatch(nameof(LeaveSettlementAction.ApplyForParty))]
     private static bool Prefix(MobileParty mobileParty)
     {
-        if(CallOriginalPolicy.IsOriginalAllowed()) return true;
+        if (mobileParty.CurrentSettlement == null) return false;
+        if (CallOriginalPolicy.IsOriginalAllowed()) return true;
 
         if (ModInformation.IsClient) return false;
 
@@ -37,7 +38,7 @@ public class LeaveSettlementActionPatches
         {
             using (new AllowedThread())
             {
-                LeaveSettlementAction.ApplyForParty(party);
+                if (party.CurrentSettlement != null) LeaveSettlementAction.ApplyForParty(party);
             }
         }, blocking: true);
     }
