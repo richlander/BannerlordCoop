@@ -26,15 +26,23 @@ public class GarrisonPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
-        var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-        settlement.Town = GameObjectCreator.CreateInitializedObject<Town>();
-
         // Act
         string? partyId = null;
+        string? settlementId = null;
 
         server.Call(() =>
         {
+            var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+            settlement.Town = GameObjectCreator.CreateInitializedObject<Town>();
+
+            var newSettlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+
             var newParty = GarrisonPartyComponent.CreateGarrisonParty("TestId", settlement, true);
+            GarrisonPartyComponent garrison = (GarrisonPartyComponent)newParty.PartyComponent;
+            garrison.Settlement = newSettlement;
+
+            Assert.True(server.ObjectManager.TryGetId(newSettlement, out settlementId));
+
             partyId = newParty.StringId;
         });
 
@@ -46,6 +54,9 @@ public class GarrisonPartyComponentTests : IDisposable
         {
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var newParty));
             Assert.IsType<GarrisonPartyComponent>(newParty.PartyComponent);
+            GarrisonPartyComponent garrison = (GarrisonPartyComponent)newParty.PartyComponent;
+
+            Assert.Equal(settlementId, garrison.Settlement.StringId);
         }
     }
 

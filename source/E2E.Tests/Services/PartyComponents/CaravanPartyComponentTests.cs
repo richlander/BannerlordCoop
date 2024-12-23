@@ -1,5 +1,4 @@
-﻿using Autofac.Features.OwnedInstances;
-using E2E.Tests.Environment;
+﻿using E2E.Tests.Environment;
 using E2E.Tests.Util;
 using HarmonyLib;
 using System.Reflection;
@@ -30,17 +29,26 @@ public class CaravanPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
 
+        var leaderField = AccessTools.Field(typeof(CaravanPartyComponent), nameof(CaravanPartyComponent._leader));
+
+        var leaderIntercept = TestEnvironment.GetIntercept(leaderField);
+
         // Act
         string? partyId = null;
+        Hero newLeaderHero = null;
 
         server.Call(() =>
         {
             var owner = GameObjectCreator.CreateInitializedObject<Hero>();
+            newLeaderHero = GameObjectCreator.CreateInitializedObject<Hero>();
             var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
             var culture = GameObjectCreator.CreateInitializedObject<CultureObject>();
             settlement.Culture = culture;
             var newParty = CaravanPartyComponent.CreateCaravanParty(owner, settlement, caravanLeader: owner);
             partyId = newParty.StringId;
+
+            leaderIntercept.Invoke(null, new object[] { newParty.CaravanPartyComponent, newLeaderHero });
+
         }, new MethodBase[]
         {
             AccessTools.Method(typeof(EnterSettlementAction), nameof(EnterSettlementAction.ApplyForParty)),
@@ -52,8 +60,11 @@ public class CaravanPartyComponentTests : IDisposable
 
         foreach (var client in TestEnvironment.Clients)
         {
+            Assert.NotNull(newLeaderHero);
             Assert.True(client.ObjectManager.TryGetObject<MobileParty>(partyId, out var newParty));
             Assert.IsType<CaravanPartyComponent>(newParty.PartyComponent);
+
+            Assert.Equal(newLeaderHero.StringId, newParty.CaravanPartyComponent._leader.StringId);
         }
     }
 
@@ -63,14 +74,19 @@ public class CaravanPartyComponentTests : IDisposable
         // Arrange
         var server = TestEnvironment.Server;
         var client1 = TestEnvironment.Clients.First();
+        Hero hero = null;
+        Settlement settlement = null;
 
-        // Act
-        PartyComponent? partyComponent = null;
+        server.Call(() =>
+        {
+            hero = GameObjectCreator.CreateInitializedObject<Hero>();
+            settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
+        });
+
+            // Act
+            PartyComponent? partyComponent = null;
         client1.Call(() =>
         {
-            var settlement = GameObjectCreator.CreateInitializedObject<Settlement>();
-            var hero = GameObjectCreator.CreateInitializedObject<Hero>();
-
             partyComponent = new CaravanPartyComponent(settlement, hero, hero);
         });
 
