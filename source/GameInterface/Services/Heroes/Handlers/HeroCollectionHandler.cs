@@ -15,6 +15,9 @@ using System.Reflection;
 using System.Diagnostics;
 using GameInterface.Services.Heroes.Messages.Collections;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Party.PartyComponents;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.Settlements.Workshops;
 
 
 namespace GameInterface.Services.Heroes.Handlers
@@ -90,6 +93,126 @@ namespace GameInterface.Services.Heroes.Handlers
             hero._children.Add(child);
         }
 
+        private void Handle(MessagePayload<CaravanListUpdated> payload)
+        {
+            var data = payload.What;
+
+            if (!TryGetId(data.Instance, out string HeroId)) return;
+            if (!TryGetId(data.Value, out string CaravanId)) return;
+
+            network.SendAll(new NetworkUpdateCaravanList(HeroId, CaravanId));
+        }
+
+        private void Handle(MessagePayload<NetworkUpdateCaravanList> payload)
+        {
+            var data = payload.What;
+
+            if (!objectManager.TryGetObject(data.HeroId, out Hero hero)) return;
+            if (!objectManager.TryGetObject(data.ValueId, out CaravanPartyComponent caravan)) return;
+
+            hero.OwnedCaravans.Add(caravan);
+        }
+
+        private void Handle(MessagePayload<CaravanListRemoved> payload)
+        {
+            var data = payload.What;
+
+            if (!TryGetId(data.Instance, out string HeroId)) return;
+            if (!TryGetId(data.Value, out string CaravanId)) return;
+
+            network.SendAll(new NetworkRemoveCaravanList(HeroId, CaravanId));
+        }
+
+        private void Handle(MessagePayload<NetworkRemoveCaravanList> payload)
+        {
+            var data = payload.What;
+
+            if (!objectManager.TryGetObject(data.HeroId, out Hero hero)) return;
+            if (!objectManager.TryGetObject(data.ValueId, out CaravanPartyComponent caravan)) return;
+
+            hero.OwnedCaravans.Remove(caravan);
+        }
+
+        private void Handle(MessagePayload<AlleyListUpdated> payload)
+        {
+            var data = payload.What;
+
+            if (!TryGetId(data.Instance, out string HeroId)) return;
+            if (!TryGetId(data.Value, out string AlleyId)) return;
+
+            network.SendAll(new NetworkUpdateAlleyList(HeroId, AlleyId));
+        }
+
+        private void Handle(MessagePayload<NetworkUpdateAlleyList> payload)
+        {
+            var data = payload.What;
+
+            if (!objectManager.TryGetObject(data.HeroId, out Hero hero)) return;
+            if (!objectManager.TryGetObject(data.ValueId, out Alley alley)) return;
+
+            hero.OwnedAlleys.Add(alley);
+        }
+
+        private void Handle(MessagePayload<AlleyListRemoved> payload)
+        {
+            var data = payload.What;
+
+            if (!TryGetId(data.Instance, out string HeroId)) return;
+            if (!TryGetId(data.Value, out string AlleyId)) return;
+
+            network.SendAll(new NetworkRemoveAlleyList(HeroId, AlleyId));
+        }
+
+        private void Handle(MessagePayload<NetworkRemoveAlleyList> payload)
+        {
+            var data = payload.What;
+
+            if (!objectManager.TryGetObject(data.HeroId, out Hero hero)) return;
+            if (!objectManager.TryGetObject(data.ValueId, out Alley alley)) return;
+
+            hero.OwnedAlleys.Remove(alley);
+        }
+
+        private void Handle(MessagePayload<WorkshopListUpdated> payload)
+        {
+            var data = payload.What;
+
+            if (!TryGetId(data.Instance, out string HeroId)) return;
+            if (!TryGetId(data.Value, out string WorkshopId)) return;
+
+            network.SendAll(new NetworkUpdateWorkshopList(HeroId, WorkshopId));
+        }
+
+        private void Handle(MessagePayload<NetworkUpdateWorkshopList> payload)
+        {
+            var data = payload.What;
+
+            if (!objectManager.TryGetObject(data.HeroId, out Hero hero)) return;
+            if (!objectManager.TryGetObject(data.ValueId, out Workshop workshop)) return;
+
+            hero._ownedWorkshops.Add(workshop);
+        }
+
+        private void Handle(MessagePayload<WorkshopListRemoved> payload)
+        {
+            var data = payload.What;
+
+            if (!TryGetId(data.Instance, out string HeroId)) return;
+            if (!TryGetId(data.Value, out string WorkshopId)) return;
+
+            network.SendAll(new NetworkRemoveWorkshopList(HeroId, WorkshopId));
+        }
+
+        private void Handle(MessagePayload<NetworkRemoveWorkshopList> payload)
+        {
+            var data = payload.What;
+
+            if (!objectManager.TryGetObject(data.HeroId, out Hero hero)) return;
+            if (!objectManager.TryGetObject(data.ValueId, out Workshop workshop)) return;
+
+            hero._ownedWorkshops.Remove(workshop);  
+        }
+
         private bool TryGetId(object value, out string id)
         {
             id = null;
@@ -100,7 +223,6 @@ namespace GameInterface.Services.Heroes.Handlers
                 Logger.Error("Unable to get ID for instance of type {type}", value.GetType());
                 return false;
             }
-
             return true;
         }
     }
